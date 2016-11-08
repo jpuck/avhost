@@ -75,6 +75,14 @@ class VHostTemplate {
 		return $this->ssl;
 	}
 
+	protected function logFormat() : String {
+		return "
+			ErrorLog \${APACHE_LOG_DIR}/{$this->hostname}.error.log
+			ErrorLogFormat \"%A [%{cu}t] [%-m:%l] %7F: %E: %M% ,\\ referer\\ %{Referer}i\"
+			CustomLog \${APACHE_LOG_DIR}/{$this->hostname}.access.log \"%p %h %l %u %t \\\"%r\\\" %>s %O \\\"%{Referer}i\\\" \\\"%{User-Agent}i\\\"\"
+		";
+	}
+
 	public function __toString(){
 		// strip pretty indented tabs seen here, mixed with spaces
 		// http://stackoverflow.com/a/17176793/4233593
