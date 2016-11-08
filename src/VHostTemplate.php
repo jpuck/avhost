@@ -6,10 +6,12 @@ use InvalidArgumentException;
 class VHostTemplate {
 	protected $hostname = '';
 	protected $document_root = '';
+	protected $ssl = [];
 
-	public function __construct(String $hostname, String $document_root){
-		$this->hostname($hostname);
-		$this->documentRoot($document_root);
+	public function __construct(String $host, String $root, Array $ssl = null){
+		$this->hostname($host);
+		$this->documentRoot($root);
+		$this->ssl($ssl);
 	}
 
 	public function hostname(String $hostname = null) : String {
@@ -35,6 +37,42 @@ class VHostTemplate {
 			}
 		}
 		return $this->document_root;
+	}
+
+	public function ssl(Array $ssl = null) : Array {
+		if(isset($ssl)){
+			$files = ['crt','key'];
+			if(isset($ssl['chn'])){
+				$files[]= 'chn';
+			}
+
+			foreach($files as $file){
+				if(!isset($ssl[$file])){
+					throw new InvalidArgumentException(
+						"SSL $file is required."
+					);
+				}
+				if(!file_exists($ssl[$file])){
+					throw new InvalidArgumentException(
+						"{$ssl[$file]} does not exist."
+					);
+				}
+				$this->ssl[$file] = realpath($ssl[$file]);
+			}
+
+			// default required
+			if(isset($ssl['required'])){
+				if(!is_bool($ssl['required'])){
+					throw new InvalidArgumentException(
+						"if declared, SSL required must be boolean."
+					);
+				}
+				$this->ssl['required'] = $ssl['required'];
+			} else {
+				$this->ssl['required'] = true;
+			}
+		}
+		return $this->ssl;
 	}
 
 	public function __toString(){
