@@ -24,4 +24,6 @@ Apache 2.4 Virtual Host Generator for Ubuntu
 
 $app = new Application($logo,'2.0-dev');
 
+$app->add(new Commands\Create);
+
 $app->run();
