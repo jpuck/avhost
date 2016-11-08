@@ -77,6 +77,10 @@ class VHostTemplate {
 
 	protected function configureEssential() : String {
 		return "
+			ServerName {$this->hostname}
+			ServerAdmin webmaster@{$this->hostname}
+			DocumentRoot {$this->document_root}
+
 			<Directory {$this->document_root}>
 				Options FollowSymLinks
 				AllowOverride All
