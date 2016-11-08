@@ -11,5 +11,10 @@
 			"name": "Jeff Puckett",
 			"email": "jeff@jeffpuckett.com"
 		}
-	]
+	],
+	"autoload": {
+		"psr-4": {
+			"jpuck\\avhost\\": "src/"
+		}
+	}
 }
