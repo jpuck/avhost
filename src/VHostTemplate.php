@@ -4,8 +4,8 @@ namespace jpuck\avhost;
 use InvalidArgumentException;
 
 class VHostTemplate {
-	protected $hostname;
-	protected $document_root;
+	protected $hostname = '';
+	protected $document_root = '';
 
 	public function __construct(String $hostname, String $document_root){
 		$this->hostname($hostname);
