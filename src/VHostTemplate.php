@@ -4,11 +4,24 @@ namespace jpuck\avhost;
 use InvalidArgumentException;
 
 class VHostTemplate {
+	protected $hostname;
 	protected $document_root;
 
-	public function __construct(String $host, String $document_root){
-		$this->host = $host;
+	public function __construct(String $hostname, String $document_root){
+		$this->hostname($hostname);
 		$this->documentRoot($document_root);
+	}
+
+	public function hostname(String $hostname = null) : String {
+		if(isset($hostname)){
+			if(!ctype_alnum(str_replace('-', '', $hostname))){
+				throw new InvalidArgumentException(
+					"Hostname may only contain alphanumeric characters."
+				);
+			}
+			$this->hostname = strtolower($hostname);
+		}
+		return $this->hostname;
 	}
 
 	public function documentRoot(String $document_root = null) : String {
