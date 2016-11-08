@@ -27,7 +27,7 @@ class VHostTemplate {
 	public function documentRoot(String $document_root = null) : String {
 		if(isset($document_root)){
 			if(is_dir($document_root)){
-				$this->document_root = $document_root;
+				$this->document_root = realpath($document_root);
 			} else {
 				throw new InvalidArgumentException(
 					"$document_root doesn't exist."
