@@ -162,6 +162,6 @@ class VHostTemplate {
 		}
 		// strip pretty indented tabs seen here, mixed with spaces
 		// http://stackoverflow.com/a/17176793/4233593
-		return preg_replace('/\t+/', '', $return);
+		return preg_replace('/(\t+)|([ \t]+$)/m', '', $return);
 	}
 }
