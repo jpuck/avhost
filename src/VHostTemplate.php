@@ -7,11 +7,20 @@ class VHostTemplate {
 	protected $hostname = '';
 	protected $document_root = '';
 	protected $ssl = [];
+	protected $opts = ['indexes' => true];
 
-	public function __construct(String $host, String $root, Array $ssl = null){
+	public function __construct(String $host, String $root, Array $ssl = null, Array $opts = null){
 		$this->hostname($host);
 		$this->documentRoot($root);
 		$this->ssl($ssl);
+		if(isset($opts['indexes'])){
+			if(!is_bool($opts['indexes'])){
+				throw new InvalidArgumentException(
+					"if declared, indexes option must be boolean."
+				);
+			}
+			$this->opts['indexes'] = $opts['indexes'];
+		}
 	}
 
 	public function hostname(String $hostname = null) : String {
@@ -76,13 +85,19 @@ class VHostTemplate {
 	}
 
 	protected function configureEssential() : String {
+		if($this->opts['indexes']){
+			$Indexes = 'Indexes';
+		} else {
+			$Indexes = '';
+		}
+
 		return "
 		    ServerName {$this->hostname}
 		    ServerAdmin webmaster@{$this->hostname}
 		    DocumentRoot {$this->document_root}
 
 		    <Directory {$this->document_root}>
-		        Options FollowSymLinks
+		        Options $Indexes FollowSymLinks
 		        AllowOverride All
 		        Require all granted
 		    </Directory>

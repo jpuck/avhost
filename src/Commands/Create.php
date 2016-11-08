@@ -22,6 +22,11 @@ class Create extends Command {
 				InputArgument::REQUIRED,
 				'File system folder to serve as document root'
 			)->addOption(
+				'no-indexes',
+				null,
+				InputOption::VALUE_NONE,
+				'Do not allow directory indexes'
+			)->addOption(
 				'ssl-certificate',
 				'c',
 				InputOption::VALUE_REQUIRED,
@@ -61,8 +66,12 @@ class Create extends Command {
 			$ssl = null;
 		}
 
+		if($input->getOption('no-indexes')){
+			$opts['indexes'] = false;
+		}
+
 		file_put_contents("$hostname.conf",
-			new VHostTemplate($hostname, $directory, $ssl)
+			new VHostTemplate($hostname, $directory, $ssl, $opts ?? null)
 		);
 	}
 }
