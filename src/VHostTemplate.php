@@ -123,7 +123,7 @@ class VHostTemplate {
 		return
 			"<IfModule mod_ssl.c>
 			    <VirtualHost *:443>\n".
-			        $this->configureEssential().
+			        $this->indent($this->configureEssential()).
 
 			        "
 			        SSLEngine on
@@ -145,6 +145,14 @@ class VHostTemplate {
 
 			    </VirtualHost>
 			</IfModule>\n";
+	}
+
+	protected function indent(String $text, Int $length = 1, $indent = "    "){
+		$indentation = $indent;
+		while(--$length){
+			$indentation .= $indent;
+		}
+		return str_replace("\n", "\n$indentation", $text);
 	}
 
 	public function __toString(){
