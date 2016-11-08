@@ -77,19 +77,19 @@ class VHostTemplate {
 
 	protected function configureEssential() : String {
 		return "
-			ServerName {$this->hostname}
-			ServerAdmin webmaster@{$this->hostname}
-			DocumentRoot {$this->document_root}
+		    ServerName {$this->hostname}
+		    ServerAdmin webmaster@{$this->hostname}
+		    DocumentRoot {$this->document_root}
 
-			<Directory {$this->document_root}>
-				Options FollowSymLinks
-				AllowOverride All
-				Require all granted
-			</Directory>
+		    <Directory {$this->document_root}>
+		        Options FollowSymLinks
+		        AllowOverride All
+		        Require all granted
+		    </Directory>
 
-			ErrorLog \${APACHE_LOG_DIR}/{$this->hostname}.error.log
-			ErrorLogFormat \"%A [%{cu}t] [%-m:%l] %7F: %E: %M% ,\\ referer\\ %{Referer}i\"
-			CustomLog \${APACHE_LOG_DIR}/{$this->hostname}.access.log \"%p %h %l %u %t \\\"%r\\\" %>s %O \\\"%{Referer}i\\\" \\\"%{User-Agent}i\\\"\"
+		    ErrorLog \${APACHE_LOG_DIR}/{$this->hostname}.error.log
+		    ErrorLogFormat \"%A [%{cu}t] [%-m:%l] %7F: %E: %M% ,\\ referer\\ %{Referer}i\"
+		    CustomLog \${APACHE_LOG_DIR}/{$this->hostname}.access.log \"%p %h %l %u %t \\\"%r\\\" %>s %O \\\"%{Referer}i\\\" \\\"%{User-Agent}i\\\"\"
 		";
 	}
 
@@ -99,9 +99,9 @@ class VHostTemplate {
 		}
 
 		return "
-			RewriteEngine On
-			RewriteCond %{HTTPS} off
-			RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI} [R=301,L]
+		    RewriteEngine On
+		    RewriteCond %{HTTPS} off
+		    RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI} [R=301,L]
 		";
 	}
 
@@ -110,7 +110,7 @@ class VHostTemplate {
 			"<VirtualHost *:80>\n".
 			$this->configureRequireSSL().
 			$this->configureEssential().
-			"</VirtualHost>\n";
+			"\n</VirtualHost>\n";
 	}
 
 	protected function configureHostSSL() : String {
@@ -122,34 +122,38 @@ class VHostTemplate {
 
 		return
 			"<IfModule mod_ssl.c>
-				<VirtualHost *:443>\n".
-					$this->configureEssential().
+			    <VirtualHost *:443>\n".
+			        $this->configureEssential().
 
-					"SSLEngine on
-					SSLCertificateFile	{$this->ssl['crt']}
-					SSLCertificateKeyFile {$this->ssl['key']}
-					$SSLCertificateChainFile
+			        "
+			        SSLEngine on
+			        SSLCertificateFile {$this->ssl['crt']}
+			        SSLCertificateKeyFile {$this->ssl['key']}
+			        $SSLCertificateChainFile
 
-					<FilesMatch \"\\.(cgi|shtml|phtml|php)\$\">
-							SSLOptions +StdEnvVars
-					</FilesMatch>
-					<Directory /usr/lib/cgi-bin>
-							SSLOptions +StdEnvVars
-					</Directory>
+			        <FilesMatch \"\\.(cgi|shtml|phtml|php)\$\">
+			            SSLOptions +StdEnvVars
+			        </FilesMatch>
+			        <Directory /usr/lib/cgi-bin>
+			            SSLOptions +StdEnvVars
+			        </Directory>
 
-					BrowserMatch \"MSIE [2-6]\" \\
-							nokeepalive ssl-unclean-shutdown \\
-							downgrade-1.0 force-response-1.0
-					BrowserMatch \"MSIE [17-9]\" ssl-unclean-shutdown
+			        BrowserMatch \"MSIE [2-6]\" \\
+			            nokeepalive ssl-unclean-shutdown \\
+			            downgrade-1.0 force-response-1.0
+			        BrowserMatch \"MSIE [17-9]\" ssl-unclean-shutdown
 
-				</VirtualHost>
+			    </VirtualHost>
 			</IfModule>\n";
 	}
 
 	public function __toString(){
+		$return = $this->configureHostPlain();
+		if(!empty($this->ssl)){
+			$return .= PHP_EOL . $this->configureHostSSL();
+		}
 		// strip pretty indented tabs seen here, mixed with spaces
 		// http://stackoverflow.com/a/17176793/4233593
-		return preg_replace('/\t+/', '', "
-		");
+		return preg_replace('/\t+/', '', $return);
 	}
 }
