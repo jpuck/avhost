@@ -1,0 +1,27 @@
+#!/usr/bin/env php
+<?php
+namespace jpuck\avhost;
+if(file_exists(__DIR__.'/../../../autoload.php')){
+	require_once __DIR__.'/../../../autoload.php';
+} else {
+	require_once __DIR__.'/../vendor/autoload.php';
+}
+
+use Symfony\Component\Console\Application;
+
+$logo = '
+              _               _
+   __ ___   _| |__   ___  ___| |_
+  / _` \ \ / / \'_ \ / _ \/ __| __|
+ | (_| |\ V /| | | | (_) \__ \ |_
+  \__,_| \_/ |_| |_|\___/|___/\__|
+
+Apache 2.4 Virtual Host Generator for Ubuntu
+';
+
+// ASCII art logo:
+// http://www.patorjk.com/software/taag/#p=display&f=Ivrit&t=avhost
+
+$app = new Application($logo,'2.0-dev');
+
+$app->run();
