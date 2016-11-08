@@ -16,7 +16,7 @@ class VHostTemplate {
 
 	public function hostname(String $hostname = null) : String {
 		if(isset($hostname)){
-			if(!ctype_alnum(str_replace('-', '', $hostname))){
+			if(!ctype_alnum(str_replace(['-','.'], '', $hostname))){
 				throw new InvalidArgumentException(
 					"Hostname may only contain alphanumeric characters."
 				);
