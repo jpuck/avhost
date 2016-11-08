@@ -42,7 +42,7 @@ class VHostTemplate {
 	public function ssl(Array $ssl = null) : Array {
 		if(isset($ssl)){
 			$files = ['crt','key'];
-			if(isset($ssl['chn'])){
+			if(!empty($ssl['chn'])){
 				$files[]= 'chn';
 			}
 
