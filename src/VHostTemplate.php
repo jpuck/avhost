@@ -75,7 +75,7 @@ class VHostTemplate {
 		return $this->ssl;
 	}
 
-	protected function logFormat() : String {
+	protected function configureLogFormat() : String {
 		return "
 			ErrorLog \${APACHE_LOG_DIR}/{$this->hostname}.error.log
 			ErrorLogFormat \"%A [%{cu}t] [%-m:%l] %7F: %E: %M% ,\\ referer\\ %{Referer}i\"
@@ -83,7 +83,7 @@ class VHostTemplate {
 		";
 	}
 
-	protected function requireSSL() : String {
+	protected function configureRequireSSL() : String {
 		if(empty($this->ssl['required'])){
 			return "";
 		}
