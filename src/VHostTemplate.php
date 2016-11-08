@@ -113,6 +113,39 @@ class VHostTemplate {
 			"</VirtualHost>\n";
 	}
 
+	protected function configureHostSSL() : String {
+		if(isset($this->ssl['chn'])){
+			$SSLCertificateChainFile = "SSLCertificateChainFile {$this->ssl['chn']}";
+		} else {
+			$SSLCertificateChainFile = '';
+		}
+
+		return
+			"<IfModule mod_ssl.c>
+				<VirtualHost *:443>\n".
+					$this->configureEssential().
+
+					"SSLEngine on
+					SSLCertificateFile	{$this->ssl['crt']}
+					SSLCertificateKeyFile {$this->ssl['key']}
+					$SSLCertificateChainFile
+
+					<FilesMatch \"\\.(cgi|shtml|phtml|php)\$\">
+							SSLOptions +StdEnvVars
+					</FilesMatch>
+					<Directory /usr/lib/cgi-bin>
+							SSLOptions +StdEnvVars
+					</Directory>
+
+					BrowserMatch \"MSIE [2-6]\" \\
+							nokeepalive ssl-unclean-shutdown \\
+							downgrade-1.0 force-response-1.0
+					BrowserMatch \"MSIE [17-9]\" ssl-unclean-shutdown
+
+				</VirtualHost>
+			</IfModule>\n";
+	}
+
 	public function __toString(){
 		// strip pretty indented tabs seen here, mixed with spaces
 		// http://stackoverflow.com/a/17176793/4233593
