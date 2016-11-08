@@ -7,6 +7,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use jpuck\avhost\VHostTemplate;
+
 class Create extends Command {
 	protected function configure(){
 		$this->setName('create')
@@ -43,5 +45,24 @@ class Create extends Command {
 	}
 
 	public function execute(InputInterface $input, OutputInterface $output){
+		$hostname  = $input->getArgument('hostname');
+		$directory = $input->getArgument('directory');
+
+		$ssl['crt'] = $input->getOption('ssl-certificate');
+		$ssl['key'] = $input->getOption('ssl-key');
+		$ssl['chn'] = $input->getOption('ssl-chain');
+		$ssl = array_filter($ssl);
+
+		if($input->getOption('no-require-ssl')){
+			$ssl['req'] = false;
+		}
+
+		if(empty($ssl)){
+			$ssl = null;
+		}
+
+		file_put_contents("$hostname.conf",
+			new VHostTemplate($hostname, $directory, $ssl)
+		);
 	}
 }
