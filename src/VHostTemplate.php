@@ -75,8 +75,14 @@ class VHostTemplate {
 		return $this->ssl;
 	}
 
-	protected function configureLogFormat() : String {
+	protected function configureEssential() : String {
 		return "
+			<Directory {$this->document_root}>
+				Options FollowSymLinks
+				AllowOverride All
+				Require all granted
+			</Directory>
+
 			ErrorLog \${APACHE_LOG_DIR}/{$this->hostname}.error.log
 			ErrorLogFormat \"%A [%{cu}t] [%-m:%l] %7F: %E: %M% ,\\ referer\\ %{Referer}i\"
 			CustomLog \${APACHE_LOG_DIR}/{$this->hostname}.access.log \"%p %h %l %u %t \\\"%r\\\" %>s %O \\\"%{Referer}i\\\" \\\"%{User-Agent}i\\\"\"
@@ -92,16 +98,6 @@ class VHostTemplate {
 			RewriteEngine On
 			RewriteCond %{HTTPS} off
 			RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI} [R=301,L]
-		";
-	}
-
-	protected function configureDirectory() : String {
-		return "
-			<Directory {$this->document_root}>
-				Options FollowSymLinks
-				AllowOverride All
-				Require all granted
-			</Directory>
 		";
 	}
 
