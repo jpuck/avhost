@@ -95,6 +95,16 @@ class VHostTemplate {
 		";
 	}
 
+	protected function configureDirectory() : String {
+		return "
+			<Directory {$this->document_root}>
+				Options FollowSymLinks
+				AllowOverride All
+				Require all granted
+			</Directory>
+		";
+	}
+
 	public function __toString(){
 		// strip pretty indented tabs seen here, mixed with spaces
 		// http://stackoverflow.com/a/17176793/4233593
