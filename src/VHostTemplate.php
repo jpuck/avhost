@@ -83,6 +83,18 @@ class VHostTemplate {
 		";
 	}
 
+	protected function requireSSL() : String {
+		if(empty($this->ssl['required'])){
+			return "";
+		}
+
+		return "
+			RewriteEngine On
+			RewriteCond %{HTTPS} off
+			RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI} [R=301,L]
+		";
+	}
+
 	public function __toString(){
 		// strip pretty indented tabs seen here, mixed with spaces
 		// http://stackoverflow.com/a/17176793/4233593
