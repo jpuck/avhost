@@ -105,6 +105,14 @@ class VHostTemplate {
 		";
 	}
 
+	protected function configureHostPlain() : String {
+		return
+			"<VirtualHost *:80>\n".
+			$this->configureRequireSSL().
+			$this->configureEssential().
+			"</VirtualHost>\n";
+	}
+
 	public function __toString(){
 		// strip pretty indented tabs seen here, mixed with spaces
 		// http://stackoverflow.com/a/17176793/4233593
