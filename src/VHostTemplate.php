@@ -42,7 +42,7 @@ class VHostTemplate {
 	public function ssl(Array $ssl = null) : Array {
 		if(isset($ssl)){
 			$files = ['crt','key'];
-			if(isset($ssl['chn'])){
+			if(!empty($ssl['chn'])){
 				$files[]= 'chn';
 			}
 
@@ -61,15 +61,15 @@ class VHostTemplate {
 			}
 
 			// default required
-			if(isset($ssl['required'])){
-				if(!is_bool($ssl['required'])){
+			if(isset($ssl['req'])){
+				if(!is_bool($ssl['req'])){
 					throw new InvalidArgumentException(
 						"if declared, SSL required must be boolean."
 					);
 				}
-				$this->ssl['required'] = $ssl['required'];
+				$this->ssl['req'] = $ssl['req'];
 			} else {
-				$this->ssl['required'] = true;
+				$this->ssl['req'] = true;
 			}
 		}
 		return $this->ssl;
@@ -94,7 +94,7 @@ class VHostTemplate {
 	}
 
 	protected function configureRequireSSL() : String {
-		if(empty($this->ssl['required'])){
+		if(empty($this->ssl['req'])){
 			return "";
 		}
 
