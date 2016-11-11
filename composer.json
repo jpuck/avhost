@@ -1,6 +1,7 @@
 {
 	"name": "jpuck/avhost",
 	"description": "Create Apache 2.4 virtual hosts for Ubuntu",
+	"bin": ["bin/avhost"],
 	"require": {
 		"symfony/console": "^3.1",
 		"php": "^7.0"
