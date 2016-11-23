@@ -49,5 +49,6 @@ Use the `-h` flag with any command to get help with usage:
 [9]:https://poser.pugx.org/jpuck/avhost/license
 [11]:https://travis-ci.org/jpuck/avhost
 [12]:https://travis-ci.org/jpuck/avhost.svg?branch=master
+[13]:https://github.com/composer/composer/issues/4072
 [14]:https://codecov.io/gh/jpuck/avhost/branch/master
 [16]:https://img.shields.io/codecov/c/github/jpuck/avhost/master.svg
