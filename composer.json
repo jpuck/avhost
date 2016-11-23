@@ -4,7 +4,8 @@
 	"bin": ["bin/avhost"],
 	"require": {
 		"symfony/console": "^3.1",
-		"php": "^7.0"
+		"php": "^7.0",
+		"symfony/process": "^3.1"
 	},
 	"license": "GPL-3.0+",
 	"authors": [
