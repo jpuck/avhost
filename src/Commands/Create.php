@@ -42,6 +42,11 @@ class Create extends Command {
 				InputOption::VALUE_REQUIRED,
 				'SSL certificate intermediate chain'
 			)->addOption(
+				'ssl-self-sign',
+				'S',
+				InputOption::VALUE_NONE,
+				'Create a self-signed certificate'
+			)->addOption(
 				'no-require-ssl',
 				null,
 				InputOption::VALUE_NONE,
