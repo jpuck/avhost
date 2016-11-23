@@ -59,21 +59,23 @@ class Create extends Command {
 		$hostname  = $input->getArgument('hostname');
 		$directory = $input->getArgument('directory');
 
-		if($input->getOption('ssl-self-sign')){
-			$this->createSelfSignedCertificate();
-		}
-
+		// check explicit values first
 		$ssl['crt'] = $input->getOption('ssl-certificate');
 		$ssl['key'] = $input->getOption('ssl-key');
 		$ssl['chn'] = $input->getOption('ssl-chain');
 		$ssl = array_filter($ssl);
 
-		if($input->getOption('no-require-ssl')){
-			$ssl['req'] = false;
-		}
-
 		if(empty($ssl)){
 			$ssl = null;
+
+			// check for self-signed option
+			if($input->getOption('ssl-self-sign')){
+				$ssl = $this->createSelfSignedCertificate();
+			}
+		}
+
+		if(!empty($ssl) && $input->getOption('no-require-ssl')){
+			$ssl['req'] = false;
 		}
 
 		if($input->getOption('no-indexes')){
