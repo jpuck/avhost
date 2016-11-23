@@ -6,6 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use jpuck\avhost\VHostTemplate;
@@ -90,6 +91,12 @@ class Create extends Command {
 	protected function createSelfSignedCertificate(String $hostname){
 		$ssl['crt'] = "/etc/ssl/certs/$hostname.crt";
 		$ssl['key'] = "/etc/ssl/private/$hostname.key";
+
+		foreach($ssl as $file){
+			if(file_exists($file)){
+				throw new RuntimeException("$file already exists.");
+			}
+		}
 
 		$command = "openssl req -x509 -nodes -sha256 -days 3650 ".
 		"-newkey rsa:2048 -keyout $ssl[key] ".
