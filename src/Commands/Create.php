@@ -96,6 +96,12 @@ class Create extends Command {
 			if(file_exists($file)){
 				throw new RuntimeException("$file already exists.");
 			}
+
+			if(!is_writable(dirname($file))){
+				throw new RuntimeException(
+					"$file is not writable. Run with sudo"
+				);
+			}
 		}
 
 		$command = "openssl req -x509 -nodes -sha256 -days 3650 ".
