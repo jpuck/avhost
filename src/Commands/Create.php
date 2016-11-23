@@ -88,7 +88,14 @@ class Create extends Command {
 	}
 
 	protected function createSelfSignedCertificate(String $hostname){
-		$command = "openssl req -x509 -nodes -sha256 -days 3650 -newkey rsa:2048 -keyout $hostname.key -out $hostname.crt -subj \"/CN=$hostname/emailAddress=webmaster@$hostname\"";
+		$ssl['crt'] = "/etc/ssl/certs/$hostname.crt";
+		$ssl['key'] = "/etc/ssl/private/$hostname.key";
+
+		$command = "openssl req -x509 -nodes -sha256 -days 3650 ".
+		"-newkey rsa:2048 -keyout $ssl[key] ".
+		"-out $ssl[crt] ".
+		"-subj '/CN=$hostname'";
+
 		$process = new Process($command);
 		$process->run();
 
@@ -100,5 +107,7 @@ class Create extends Command {
 		// openssl sends informational output to stderr
 		// http://unix.stackexchange.com/a/131400/148062
 		echo $process->getErrorOutput();
+
+		return $ssl;
 	}
 }
