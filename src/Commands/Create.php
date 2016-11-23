@@ -6,7 +6,8 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use jpuck\avhost\VHostTemplate;
 
 class Create extends Command {
@@ -58,6 +59,10 @@ class Create extends Command {
 		$hostname  = $input->getArgument('hostname');
 		$directory = $input->getArgument('directory');
 
+		if($input->getOption('ssl-self-sign')){
+			$this->createSelfSignedCertificate();
+		}
+
 		$ssl['crt'] = $input->getOption('ssl-certificate');
 		$ssl['key'] = $input->getOption('ssl-key');
 		$ssl['chn'] = $input->getOption('ssl-chain');
@@ -78,5 +83,17 @@ class Create extends Command {
 		file_put_contents("$hostname.conf",
 			new VHostTemplate($hostname, $directory, $ssl, $opts ?? null)
 		);
+	}
+
+	protected function createSelfSignedCertificate(){
+		$process = new Process('ls -lsa');
+		$process->run();
+
+		// executes after the command finishes
+		if (!$process->isSuccessful()) {
+			throw new ProcessFailedException($process);
+		}
+
+		echo $process->getOutput();
 	}
 }
