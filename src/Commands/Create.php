@@ -105,9 +105,9 @@ class Create extends Command {
 		}
 
 		$command = "openssl req -x509 -nodes -sha256 -days 3650 ".
-		"-newkey rsa:2048 -keyout $ssl[key] ".
-		"-out $ssl[crt] ".
-		"-subj '/CN=$hostname'";
+			"-newkey rsa:2048 -keyout $ssl[key] ".
+			"-out $ssl[crt] ".
+			"-subj '/CN=$hostname'";
 
 		$process = new Process($command);
 		$process->run();
