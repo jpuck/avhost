@@ -70,7 +70,7 @@ class Create extends Command {
 
 			// check for self-signed option
 			if($input->getOption('ssl-self-sign')){
-				$ssl = $this->createSelfSignedCertificate();
+				$ssl = $this->createSelfSignedCertificate($hostname);
 			}
 		}
 
@@ -87,8 +87,9 @@ class Create extends Command {
 		);
 	}
 
-	protected function createSelfSignedCertificate(){
-		$process = new Process('ls -lsa');
+	protected function createSelfSignedCertificate(String $hostname){
+		$command = "openssl req -x509 -nodes -sha256 -days 3650 -newkey rsa:2048 -keyout $hostname.key -out $hostname.crt -subj \"/CN=$hostname/emailAddress=webmaster@$hostname\"";
+		$process = new Process($command);
 		$process->run();
 
 		// executes after the command finishes
@@ -96,6 +97,8 @@ class Create extends Command {
 			throw new ProcessFailedException($process);
 		}
 
-		echo $process->getOutput();
+		// openssl sends informational output to stderr
+		// http://unix.stackexchange.com/a/131400/148062
+		echo $process->getErrorOutput();
 	}
 }
