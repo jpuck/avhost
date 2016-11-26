@@ -20,8 +20,9 @@ so the best way to install it would be somewhere in root's path.
 
 [Download the latest release][6], set it executable, and move it to a good path.
 
-    chmod +x avhost.phar
-    sudo mv avhost.phar /usr/local/bin/avhost
+    curl -s -L https://github.com/jpuck/avhost/releases/latest | egrep -o '/jpuck/avhost/releases/download/[0-9\.]*/avhost.phar' | wget --base=http://github.com/ -i - -O avhost
+    chmod +x avhost
+    sudo mv avhost /usr/local/bin/
 
 After installing, run without any arguments to see a list of commands:
 
