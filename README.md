@@ -13,24 +13,15 @@ hosts for Ubuntu.
 
 ## Getting Started
 
-Registered on [packagist][6] for easy [global installation][12]
-using [composer][5].
+This is an Apache adminstrative tool whose commands mostly require sudo.
+It can write configuration files to `/etc/apache2/sites-available/` invoke `a2ensite`
+as well as writing SSL certificates to `/etc/ssl/certs/` and keys to `/etc/ssl/private/`
+so the best way to install it would be somewhere in root's path.
 
-    composer global require jpuck/avhost
+[Download the latest release][6], set it executable, and move it to a good path.
 
-Make sure your `$PATH` contains the global bin directory,
-because [composer doesn't automatically modify your `$PATH` variable][13].
-However, composer will tell you the [location of the global bin directory][12]:
-
-    composer global config bin-dir --absolute
-
-[Add that path to your shell profile or rc so that it's always available][14]:
-
-    echo 'export PATH="$PATH:$HOME/.config/composer/vendor/bin"' >> ~/.bashrc
-
-Then restart your shell, or source the file to take immediate effect:
-
-    source ~/.bashrc
+    chmod +x avhost.phar
+    sudo mv avhost.phar /usr/local/bin/avhost
 
 After installing, run without any arguments to see a list of commands:
 
@@ -67,20 +58,12 @@ which makes sense in some cases, like when using a self-signed certificate that 
 However, since you can get a free trusted certificate from [Let's Encrypt][20], then there's no reason to be using
 a self-signed certificate on a public site anyway.
 
-## No sudo
-
-> sudo: avhost: command not found
-
-If the command works, but not as sudo, then [it's probably not in your path][22].
-
-    sudo -E env "PATH=$PATH" <command> [arguments]
-
 [1]:http://symfony.com/doc/current/components/console.html
 [4]:https://github.com/jpuck/avhost/issues
 [5]:https://getcomposer.org/
-[6]:https://packagist.org/packages/jpuck/avhost
+[6]:https://github.com/jpuck/avhost/releases/latest
 [7]:https://poser.pugx.org/jpuck/avhost/v/stable
-[8]:https://poser.pugx.org/jpuck/avhost/downloads
+[8]:https://img.shields.io/github/downloads/jpuck/avhost/total.svg
 [9]:https://poser.pugx.org/jpuck/avhost/license
 [11]:https://travis-ci.org/jpuck/avhost
 [12]:https://travis-ci.org/jpuck/avhost.svg?branch=master
