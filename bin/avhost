@@ -22,8 +22,11 @@ Apache 2.4 Virtual Host Generator for Ubuntu
 // ASCII art logo:
 // http://www.patorjk.com/software/taag/#p=display&f=Ivrit&t=avhost
 
-$app = new Application($logo,'2.1.1');
+$version = $version ?? 'dev';
+
+$app = new Application($logo, $version);
 
 $app->add(new Commands\Create);
+$app->add(new Commands\Upgrade);
 
 $app->run();
