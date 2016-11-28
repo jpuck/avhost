@@ -84,7 +84,7 @@ class VHostTemplate {
 		return $this->ssl;
 	}
 
-	protected function configureEssential() : String {
+	protected function getDirectoryOptions() : String {
 		if($this->opts['indexes']){
 			$Indexes = 'Indexes';
 		} else {
@@ -92,14 +92,19 @@ class VHostTemplate {
 		}
 
 		return "
+		        Options $Indexes FollowSymLinks
+		        AllowOverride All
+		        Require all granted";
+	}
+
+	protected function configureEssential() : String {
+		return "
 		    ServerName {$this->hostname}
 		    ServerAdmin webmaster@{$this->hostname}
 		    DocumentRoot {$this->document_root}
 
-		    <Directory {$this->document_root}>
-		        Options $Indexes FollowSymLinks
-		        AllowOverride All
-		        Require all granted
+		    <Directory {$this->document_root}>".
+				$this->getDirectoryOptions()."
 		    </Directory>
 
 		    ErrorLog \${APACHE_LOG_DIR}/{$this->hostname}.error.log
