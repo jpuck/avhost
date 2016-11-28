@@ -13,13 +13,21 @@ class VHostTemplate {
 		$this->hostname($host);
 		$this->documentRoot($root);
 		$this->ssl($ssl);
-		if(isset($opts['indexes'])){
-			if(!is_bool($opts['indexes'])){
-				throw new InvalidArgumentException(
-					"if declared, indexes option must be boolean."
-				);
+		if(isset($opts)){
+			$this->getOptions($opts);
+		}
+	}
+
+	protected function getOptions(Array $options){
+		foreach(['indexes','default'] as $option){
+			if(isset($options[$option])){
+				if(!is_bool($options[$option])){
+					throw new InvalidArgumentException(
+						"if declared, $option option must be boolean."
+					);
+				}
+				$this->opts[$option] = $options[$option];
 			}
-			$this->opts['indexes'] = $opts['indexes'];
 		}
 	}
 
