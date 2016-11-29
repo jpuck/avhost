@@ -24,7 +24,7 @@ class VHostTemplate {
 	}
 
 	protected function getOptions(Array $options){
-		foreach(['indexes','default'] as $option){
+		foreach(['indexes','forbidden'] as $option){
 			if(isset($options[$option])){
 				if(!is_bool($options[$option])){
 					throw new InvalidArgumentException(
@@ -98,7 +98,7 @@ class VHostTemplate {
 	}
 
 	protected function getDirectoryOptions() : String {
-		if(!empty($this->options['default'])){
+		if(!empty($this->options['forbidden'])){
 			return "
 		        Require all denied";
 		}

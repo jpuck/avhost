@@ -62,8 +62,14 @@ class Create extends Command {
 	}
 
 	public function execute(InputInterface $input, OutputInterface $output){
-		$hostname  = $input->getArgument('hostname');
-		$directory = $input->getArgument('directory');
+		if($input->getOption('forbidden-default')){
+			$opts['forbidden'] = true;
+			$hostname = '0000-forbidden.example.com';
+			$directory = sys_get_temp_dir();
+		} else {
+			$hostname  = $input->getArgument('hostname');
+			$directory = $input->getArgument('directory');
+		}
 
 		// check explicit values first
 		$ssl['crt'] = $input->getOption('ssl-certificate');
@@ -86,10 +92,6 @@ class Create extends Command {
 
 		if($input->getOption('no-indexes')){
 			$opts['indexes'] = false;
-		}
-
-		if($input->getOption('forbidden-default')){
-			$opts['default'] = true;
 		}
 
 		file_put_contents("$hostname.conf",
