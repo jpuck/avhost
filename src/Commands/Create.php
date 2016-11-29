@@ -53,6 +53,11 @@ class Create extends Command {
 				null,
 				InputOption::VALUE_NONE,
 				'Do not redirect plain hosts to encrypted connection'
+			)->addOption(
+				'forbidden-default',
+				null,
+				InputOption::VALUE_NONE,
+				'Forbid requests for undefined hosts'
 			);
 	}
 
@@ -83,8 +88,14 @@ class Create extends Command {
 			$opts['indexes'] = false;
 		}
 
+		if($input->getOption('forbidden-default')){
+			$opts['default'] = true;
+		}
+
 		file_put_contents("$hostname.conf",
-			new VHostTemplate($hostname, $directory, $ssl, $opts ?? null)
+			new VHostTemplate($hostname, $directory,
+				array_merge($ssl, $opts ?? null)
+			)
 		);
 	}
 

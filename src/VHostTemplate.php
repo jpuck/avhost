@@ -98,6 +98,11 @@ class VHostTemplate {
 	}
 
 	protected function getDirectoryOptions() : String {
+		if(!empty($this->options['default'])){
+			return "
+		        Require all denied";
+		}
+
 		if($this->options['indexes']){
 			$Indexes = 'Indexes';
 		} else {
