@@ -8,7 +8,7 @@ class VHostTemplate {
 	protected $hostname = '';
 	protected $documentRoot = '';
 	protected $ssl = [];
-	protected $opts = ['indexes' => true];
+	protected $options = ['indexes' => true];
 
 	public function __construct(String $host, String $documentRoot, Array $options = null){
 		$this->hostname($host);
@@ -31,7 +31,7 @@ class VHostTemplate {
 						"if declared, $option option must be boolean."
 					);
 				}
-				$this->opts[$option] = $options[$option];
+				$this->options[$option] = $options[$option];
 			}
 		}
 	}
@@ -98,7 +98,7 @@ class VHostTemplate {
 	}
 
 	protected function getDirectoryOptions() : String {
-		if($this->opts['indexes']){
+		if($this->options['indexes']){
 			$Indexes = 'Indexes';
 		} else {
 			$Indexes = '';
