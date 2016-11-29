@@ -1,20 +1,25 @@
 <?php
 namespace jpuck\avhost;
 
+use jpuck\phpdev\Functions as jp;
 use InvalidArgumentException;
 
 class VHostTemplate {
 	protected $hostname = '';
-	protected $document_root = '';
+	protected $documentRoot = '';
 	protected $ssl = [];
 	protected $opts = ['indexes' => true];
 
-	public function __construct(String $host, String $root, Array $ssl = null, Array $opts = null){
+	public function __construct(String $host, String $documentRoot, Array $options = null){
 		$this->hostname($host);
-		$this->documentRoot($root);
-		$this->ssl($ssl);
-		if(isset($opts)){
-			$this->getOptions($opts);
+		$this->documentRoot($documentRoot);
+
+		if(isset($options)){
+			$this->getOptions($options);
+		}
+
+		if(jp::anyset($options['crt'],$options['key'])){
+			$this->ssl($options);
 		}
 	}
 
@@ -43,17 +48,17 @@ class VHostTemplate {
 		return $this->hostname;
 	}
 
-	public function documentRoot(String $document_root = null) : String {
-		if(isset($document_root)){
-			if(is_dir($document_root)){
-				$this->document_root = realpath($document_root);
+	public function documentRoot(String $documentRoot = null) : String {
+		if(isset($documentRoot)){
+			if(is_dir($documentRoot)){
+				$this->documentRoot = realpath($documentRoot);
 			} else {
 				throw new InvalidArgumentException(
-					"$document_root doesn't exist."
+					"$documentRoot doesn't exist."
 				);
 			}
 		}
-		return $this->document_root;
+		return $this->documentRoot;
 	}
 
 	public function ssl(Array $ssl = null) : Array {
@@ -109,9 +114,9 @@ class VHostTemplate {
 		return "
 		    ServerName {$this->hostname}
 		    ServerAdmin webmaster@{$this->hostname}
-		    DocumentRoot {$this->document_root}
+		    DocumentRoot {$this->documentRoot}
 
-		    <Directory {$this->document_root}>".
+		    <Directory {$this->documentRoot}>".
 				$this->getDirectoryOptions()."
 		    </Directory>
 
