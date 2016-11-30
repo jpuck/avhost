@@ -1,25 +1,38 @@
 <?php
 namespace jpuck\avhost;
 
+use jpuck\phpdev\Functions as jp;
 use InvalidArgumentException;
 
 class VHostTemplate {
 	protected $hostname = '';
-	protected $document_root = '';
+	protected $documentRoot = '';
 	protected $ssl = [];
-	protected $opts = ['indexes' => true];
+	protected $options = ['indexes' => true];
 
-	public function __construct(String $host, String $root, Array $ssl = null, Array $opts = null){
+	public function __construct(String $host, String $documentRoot, Array $options = null){
 		$this->hostname($host);
-		$this->documentRoot($root);
-		$this->ssl($ssl);
-		if(isset($opts['indexes'])){
-			if(!is_bool($opts['indexes'])){
-				throw new InvalidArgumentException(
-					"if declared, indexes option must be boolean."
-				);
+		$this->documentRoot($documentRoot);
+
+		if(isset($options)){
+			$this->setOptions($options);
+		}
+
+		if(jp::anyset($options['crt'],$options['key'])){
+			$this->ssl($options);
+		}
+	}
+
+	protected function setOptions(Array $options){
+		foreach(['indexes','forbidden'] as $option){
+			if(isset($options[$option])){
+				if(!is_bool($options[$option])){
+					throw new InvalidArgumentException(
+						"if declared, $option option must be boolean."
+					);
+				}
+				$this->options[$option] = $options[$option];
 			}
-			$this->opts['indexes'] = $opts['indexes'];
 		}
 	}
 
@@ -35,17 +48,17 @@ class VHostTemplate {
 		return $this->hostname;
 	}
 
-	public function documentRoot(String $document_root = null) : String {
-		if(isset($document_root)){
-			if(is_dir($document_root)){
-				$this->document_root = realpath($document_root);
+	public function documentRoot(String $documentRoot = null) : String {
+		if(isset($documentRoot)){
+			if(is_dir($documentRoot)){
+				$this->documentRoot = realpath($documentRoot);
 			} else {
 				throw new InvalidArgumentException(
-					"$document_root doesn't exist."
+					"$documentRoot doesn't exist."
 				);
 			}
 		}
-		return $this->document_root;
+		return $this->documentRoot;
 	}
 
 	public function ssl(Array $ssl = null) : Array {
@@ -70,6 +83,12 @@ class VHostTemplate {
 			}
 
 			// default required
+			$this->ssl['req'] = true;
+
+			if($this->options['forbidden'] ?? false){
+				$this->ssl['req'] = false;
+			}
+
 			if(isset($ssl['req'])){
 				if(!is_bool($ssl['req'])){
 					throw new InvalidArgumentException(
@@ -77,29 +96,37 @@ class VHostTemplate {
 					);
 				}
 				$this->ssl['req'] = $ssl['req'];
-			} else {
-				$this->ssl['req'] = true;
 			}
 		}
 		return $this->ssl;
 	}
 
-	protected function configureEssential() : String {
-		if($this->opts['indexes']){
+	protected function getDirectoryOptions() : String {
+		if(!empty($this->options['forbidden'])){
+			return "
+		        Require all denied";
+		}
+
+		if($this->options['indexes']){
 			$Indexes = 'Indexes';
 		} else {
 			$Indexes = '';
 		}
 
 		return "
-		    ServerName {$this->hostname}
-		    ServerAdmin webmaster@{$this->hostname}
-		    DocumentRoot {$this->document_root}
-
-		    <Directory {$this->document_root}>
 		        Options $Indexes FollowSymLinks
 		        AllowOverride All
-		        Require all granted
+		        Require all granted";
+	}
+
+	protected function configureEssential() : String {
+		return "
+		    ServerName {$this->hostname}
+		    ServerAdmin webmaster@{$this->hostname}
+		    DocumentRoot {$this->documentRoot}
+
+		    <Directory {$this->documentRoot}>".
+				$this->getDirectoryOptions()."
 		    </Directory>
 
 		    ErrorLog \${APACHE_LOG_DIR}/{$this->hostname}.error.log
