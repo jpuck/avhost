@@ -15,7 +15,7 @@ class VHostTemplate {
 		$this->documentRoot($documentRoot);
 
 		if(isset($options)){
-			$this->getOptions($options);
+			$this->setOptions($options);
 		}
 
 		if(jp::anyset($options['crt'],$options['key'])){
@@ -23,7 +23,7 @@ class VHostTemplate {
 		}
 	}
 
-	protected function getOptions(Array $options){
+	protected function setOptions(Array $options){
 		foreach(['indexes','forbidden'] as $option){
 			if(isset($options[$option])){
 				if(!is_bool($options[$option])){
