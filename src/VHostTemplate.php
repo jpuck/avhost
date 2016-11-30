@@ -83,6 +83,12 @@ class VHostTemplate {
 			}
 
 			// default required
+			$this->ssl['req'] = true;
+
+			if($this->options['forbidden'] ?? false){
+				$this->ssl['req'] = false;
+			}
+
 			if(isset($ssl['req'])){
 				if(!is_bool($ssl['req'])){
 					throw new InvalidArgumentException(
@@ -90,8 +96,6 @@ class VHostTemplate {
 					);
 				}
 				$this->ssl['req'] = $ssl['req'];
-			} else {
-				$this->ssl['req'] = true;
 			}
 		}
 		return $this->ssl;
