@@ -18,11 +18,9 @@ It can write configuration files to `/etc/apache2/sites-available/` invoke `a2en
 as well as writing SSL certificates to `/etc/ssl/certs/` and keys to `/etc/ssl/private/`
 so the best way to install it would be somewhere in root's path.
 
-[Download the latest release][6], set it executable, and move it to a good path.
+[Download the latest release][6], set it executable, and move it to a good path. Here's a oneline command:
 
-    curl -s -L https://github.com/jpuck/avhost/releases/latest | egrep -o '/jpuck/avhost/releases/download/[0-9\.]*/avhost.phar' | wget --base=http://github.com/ -i - -O avhost
-    chmod +x avhost
-    sudo mv avhost /usr/local/bin/
+    curl -s -L https://github.com/jpuck/avhost/releases/latest | egrep -o '/jpuck/avhost/releases/download/[0-9\.]*/avhost.phar' | wget --base=http://github.com/ -i - -O avhost && chmod +x avhost && sudo mv avhost /usr/local/bin/
 
 After installing, run without any arguments to see a list of commands:
 
