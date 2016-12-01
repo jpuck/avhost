@@ -57,6 +57,25 @@ which makes sense in some cases, like when using a self-signed certificate that 
 However, since you can get a free trusted certificate from [Let's Encrypt][20], then there's no reason to be using
 a self-signed certificate on a public site anyway.
 
+## 403 Forbidden
+
+If you create the document root in some random folder, then not only must that folder and files be readable to Apache,
+but also every directory up to root must be executable by Apache in order for it to traverse the file system.
+
+For example, if your site's files are in `/path/to/private/web/folder`
+
+```bash
+# up to directory, folders executable
+chmod go+X /
+chmod go+X /path
+chmod go+X /path/to
+chmod go+X /path/to/private
+chmod go+X /path/to/private/web
+
+# in directory, folders executable, files readable
+chmod -R go+rX /path/to/private/web/folder
+```
+
 [1]:http://symfony.com/doc/current/components/console.html
 [4]:https://github.com/jpuck/avhost/issues
 [5]:https://getcomposer.org/
