@@ -113,7 +113,7 @@ class VHostTemplate {
 		}
 
 		return "
-		        Options $Indexes +FollowSymLinks
+		        Options $Indexes +FollowSymLinks -MultiViews
 		        AllowOverride All
 		        Require all granted";
 	}
