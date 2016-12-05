@@ -1,7 +1,6 @@
 <?php
 namespace jpuck\avhost;
 
-use jpuck\phpdev\Functions as jp;
 use InvalidArgumentException;
 
 class VHostTemplate {
@@ -18,7 +17,7 @@ class VHostTemplate {
 			$this->setOptions($options);
 		}
 
-		if(jp::anyset($options['crt'],$options['key'])){
+		if(isset($options['crt']) || isset($options['key'])){
 			$this->ssl($options);
 		}
 	}
