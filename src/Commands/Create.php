@@ -24,10 +24,10 @@ class Create extends Command {
 				InputArgument::REQUIRED,
 				'File system folder to serve as document root'
 			)->addOption(
-				'no-indexes',
+				'indexes',
 				null,
 				InputOption::VALUE_NONE,
-				'Do not allow directory indexes'
+				'Allow directory contents listing indexes'
 			)->addOption(
 				'ssl-certificate',
 				'c',
@@ -90,8 +90,8 @@ class Create extends Command {
 			$ssl['req'] = false;
 		}
 
-		if($input->getOption('no-indexes')){
-			$opts['indexes'] = false;
+		if($input->getOption('indexes')){
+			$opts['indexes'] = true;
 		}
 
 		file_put_contents("$hostname.conf",

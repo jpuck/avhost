@@ -7,7 +7,7 @@ class VHostTemplate {
 	protected $hostname = '';
 	protected $documentRoot = '';
 	protected $ssl = [];
-	protected $options = ['indexes' => true];
+	protected $options = ['indexes' => false];
 
 	public function __construct(String $host, String $documentRoot, Array $options = null){
 		$this->hostname($host);
@@ -107,13 +107,13 @@ class VHostTemplate {
 		}
 
 		if($this->options['indexes']){
-			$Indexes = 'Indexes';
+			$Indexes = '+Indexes';
 		} else {
-			$Indexes = '';
+			$Indexes = '-Indexes';
 		}
 
 		return "
-		        Options $Indexes FollowSymLinks
+		        Options $Indexes +FollowSymLinks
 		        AllowOverride All
 		        Require all granted";
 	}
