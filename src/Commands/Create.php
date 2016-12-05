@@ -96,7 +96,7 @@ class Create extends Command {
 
 		file_put_contents("$hostname.conf",
 			new VHostTemplate($hostname, $directory,
-				array_merge($ssl, $opts ?? [])
+				array_merge($ssl ?? [], $opts ?? [])
 			)
 		);
 	}
