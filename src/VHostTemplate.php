@@ -119,12 +119,24 @@ class VHostTemplate {
 	}
 
 	protected function configureEssential() : String {
+		$escaped_hostname = str_replace('.','\\.',$this->hostname);
+
 		return "
 		    ServerName {$this->hostname}
 		    ServerAlias www.{$this->hostname}
 		    UseCanonicalName On
 		    ServerAdmin webmaster@{$this->hostname}
 		    DocumentRoot {$this->documentRoot}
+
+		    RewriteEngine On
+		    RewriteCond %{HTTPS} =on
+		    RewriteRule ^ - [env=proto:https]
+		    RewriteCond %{HTTPS} !=on
+		    RewriteRule ^ - [env=proto:http]
+
+		    # redirect all aliases to primary host
+		    RewriteCond %{HTTP_HOST} !^$escaped_hostname\$ [NC]
+		    RewriteRule ^ %{ENV:PROTO}://%{SERVER_NAME}%{REQUEST_URI} [R=301,L]
 
 		    <Directory {$this->documentRoot}>".
 				$this->getDirectoryOptions()."
