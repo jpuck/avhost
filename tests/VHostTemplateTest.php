@@ -14,7 +14,7 @@ class VHostTemplateTest extends PHPUnit_Framework_TestCase {
 	public function virtualHostConfigurationDataProvider(){
 		$tmp = static::$tmp;
 		return [
-			'plain' => ['www.example.com', $tmp],
+			'plain' => ['example.com', $tmp],
 		];
 	}
 

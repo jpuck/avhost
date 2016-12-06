@@ -76,6 +76,20 @@ chmod go+X /path/to/private/web
 chmod -R go+rX /path/to/private/web/folder
 ```
 
+## No headers
+
+In order to allow [Cross Origin Resource Sharing][25], you must enable
+[Apache Module mod_headers][24]
+
+    sudo a2enmod headers
+
+## No compression
+
+For performance reasons, most file types are compressed, but you must have
+enabled [Apache Module mod_deflate][26].
+
+    sudo a2enmod deflate
+
 [1]:http://symfony.com/doc/current/components/console.html
 [4]:https://github.com/jpuck/avhost/issues
 [5]:https://getcomposer.org/
@@ -95,3 +109,6 @@ chmod -R go+rX /path/to/private/web/folder
 [21]:https://en.wikipedia.org/wiki/Transport_Layer_Security
 [22]:http://stackoverflow.com/a/29400598/4233593
 [23]:https://httpd.apache.org/docs/2.4/mod/mod_ssl.html
+[24]:https://httpd.apache.org/docs/2.4/mod/mod_headers.html
+[25]:https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS
+[26]:https://httpd.apache.org/docs/current/mod/mod_deflate.html
