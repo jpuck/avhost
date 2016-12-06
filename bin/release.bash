@@ -8,7 +8,7 @@ if [ -z "$1" ]; then
 fi
 
 # move to working directory
-cd $( dirname "${BASH_SOURCE[0]}" )
+cd $( dirname "${BASH_SOURCE[0]}" )/../
 
 # add version to script
 sed -i "s/namespace jpuck\\\avhost;/namespace jpuck\\\avhost;\n\$version = '$1';/" bin/avhost
