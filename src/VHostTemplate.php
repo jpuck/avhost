@@ -157,6 +157,7 @@ class VHostTemplate {
 
 		    <IfModule mod_headers.c>
 		        Header set Access-Control-Allow-Origin \"*\"
+		        Header set X-Content-Type-Options \"nosniff\"
 		    </IfModule>
 		";
 	}
