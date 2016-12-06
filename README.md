@@ -83,6 +83,13 @@ In order to allow [Cross Origin Resource Sharing][25], you must enable
 
     sudo a2enmod headers
 
+## No compression
+
+For performance reasons, most file types are compressed, but you must have
+enabled [Apache Module mod_deflate][26].
+
+    sudo a2enmod deflate
+
 [1]:http://symfony.com/doc/current/components/console.html
 [4]:https://github.com/jpuck/avhost/issues
 [5]:https://getcomposer.org/
@@ -104,3 +111,4 @@ In order to allow [Cross Origin Resource Sharing][25], you must enable
 [23]:https://httpd.apache.org/docs/2.4/mod/mod_ssl.html
 [24]:https://httpd.apache.org/docs/2.4/mod/mod_headers.html
 [25]:https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS
+[26]:https://httpd.apache.org/docs/current/mod/mod_deflate.html
