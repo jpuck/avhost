@@ -124,9 +124,10 @@ class VHostTemplate {
 		return "
 		    ServerName {$this->hostname}
 		    ServerAlias www.{$this->hostname}
-		    UseCanonicalName On
 		    ServerAdmin webmaster@{$this->hostname}
 		    DocumentRoot {$this->documentRoot}
+		    UseCanonicalName On
+		    ServerSignature Off
 
 		    # Block access to all hidden files and directories with the exception of
 		    # the visible content from within the `/.well-known/` hidden directory.
