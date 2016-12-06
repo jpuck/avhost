@@ -121,6 +121,8 @@ class VHostTemplate {
 	protected function configureEssential() : String {
 		return "
 		    ServerName {$this->hostname}
+		    ServerAlias www.{$this->hostname}
+		    UseCanonicalName On
 		    ServerAdmin webmaster@{$this->hostname}
 		    DocumentRoot {$this->documentRoot}
 
