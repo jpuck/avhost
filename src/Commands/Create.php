@@ -94,11 +94,16 @@ class Create extends Command {
 			$opts['indexes'] = true;
 		}
 
-		file_put_contents("$hostname.conf",
+		file_put_contents("/etc/apache2/sites-available/$hostname.conf",
 			new VHostTemplate($hostname, $directory,
 				array_merge($ssl ?? [], $opts ?? [])
 			)
 		);
+
+		$command = "a2ensite $hostname.conf";
+
+		$process = new Process($command);
+		$process->run();
 	}
 
 	protected function createSelfSignedCertificate(String $hostname){
