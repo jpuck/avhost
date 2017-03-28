@@ -388,6 +388,18 @@ class VHostTemplate {
 		";
 	}
 
+	protected function addHstsHeader() : String {
+		if(empty($this->ssl['req'])){
+			return "";
+		}
+
+		return "
+		    <IfModule mod_headers.c>
+		        Header set Strict-Transport-Security: max-age=31536000
+		    </IfModule>
+		";
+	}
+
 	protected function configureHostPlain() : String {
 		return
 			"<VirtualHost *:80>\n".
@@ -406,6 +418,7 @@ class VHostTemplate {
 		return
 			"<IfModule mod_ssl.c>
 			    <VirtualHost *:443>\n".
+			        $this->indent($this->addHstsHeader()).
 			        $this->indent($this->configureEssential()).
 
 			        "
