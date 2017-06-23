@@ -78,8 +78,10 @@ chmod -R go+rX /path/to/private/web/folder
 
 ## No headers
 
-In order to allow [Cross Origin Resource Sharing][25], you must enable
-[Apache Module mod_headers][24]
+In order to add protection such as `X-Content-Type-Options "nosniff"` and to
+remove the `X-Powered-By` information, you must enable [Apache Module mod_headers][24].
+This is also needed to allow [Cross Origin Resource Sharing][25], which is not
+enabled by this project - you must manually define your CORS headers if you want.
 
     sudo a2enmod headers
 
