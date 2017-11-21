@@ -120,7 +120,6 @@ class VHostTemplate {
 	}
 
 	protected function configureEssential() : String {
-		$escaped_hostname = str_replace('.','\\.',$this->hostname);
 
 		return PHP_EOL.$this->indent($this->getConf('name', [
 				'hostname' => $this->hostname,
@@ -128,17 +127,11 @@ class VHostTemplate {
 			]))
 			.PHP_EOL
 			.PHP_EOL.$this->indent($this->getConf('blockHidden'))
+			.PHP_EOL.$this->indent($this->getConf('redirectToPrimaryHost', [
+				'hostname' => $this->hostname,
+			]))
 
 			."
-		    RewriteEngine On
-		    RewriteCond %{HTTPS} =on
-		    RewriteRule ^ - [env=proto:https]
-		    RewriteCond %{HTTPS} !=on
-		    RewriteRule ^ - [env=proto:http]
-
-		    # redirect all aliases to primary host
-		    RewriteCond %{HTTP_HOST} !^$escaped_hostname\$ [NC]
-		    RewriteRule ^ %{ENV:PROTO}://%{SERVER_NAME}%{REQUEST_URI} [R=301,L]
 
 		    <Directory {$this->documentRoot}>".
 				$this->getDirectoryOptions()."
