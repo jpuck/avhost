@@ -103,8 +103,7 @@ class VHostTemplate {
 
 	protected function getDirectoryOptions() : String {
 		if(!empty($this->options['forbidden'])){
-			return "
-		        Require all denied";
+			return "<Directory {$this->documentRoot}>Require all denied</Directory>";
 		}
 
 		if($this->options['indexes']){
@@ -114,9 +113,14 @@ class VHostTemplate {
 		}
 
 		return "
+
+		    <Directory {$this->documentRoot}>
 		        Options $Indexes +FollowSymLinks -MultiViews
 		        AllowOverride All
-		        Require all granted";
+		        Require all granted
+		    </Directory>
+
+		";
 	}
 
 	protected function configureEssential() : String {
@@ -130,13 +134,7 @@ class VHostTemplate {
 			.PHP_EOL.$this->indent($this->getConf('blockHidden'))
 			.PHP_EOL.$this->indent($this->getConf('redirectToPrimaryHost', $variables))
 
-			."
-
-		    <Directory {$this->documentRoot}>".
-				$this->getDirectoryOptions()."
-		    </Directory>
-
-			"
+			.$this->getDirectoryOptions()
 			.$this->indent($this->getConf('logging', $variables)).PHP_EOL.PHP_EOL
 
 			.$this->getConf('common');
