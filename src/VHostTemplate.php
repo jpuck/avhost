@@ -140,7 +140,7 @@ class VHostTemplate {
 			.PHP_EOL.PHP_EOL.$this->indent($this->getDirectoryOptions())
 			.PHP_EOL.PHP_EOL.$this->indent($this->getConf('logging', $variables)).PHP_EOL.PHP_EOL
 
-			.$this->getConf('common');
+			.$this->indent($this->getConf('common'));
 	}
 
 	protected function getConf(string $name, array $variables = null) : string
