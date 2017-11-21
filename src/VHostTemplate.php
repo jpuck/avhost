@@ -184,11 +184,7 @@ class VHostTemplate {
 			return "";
 		}
 
-		return "
-		    <IfModule mod_headers.c>
-		        Header set Strict-Transport-Security: max-age=31536000
-		    </IfModule>
-		";
+		return $this->getConf('hsts');
 	}
 
 	protected function configureHostPlain() : String {
@@ -222,8 +218,8 @@ class VHostTemplate {
 	protected function configureHostSSL() : String {
 		return
 			"<IfModule mod_ssl.c>
-			    <VirtualHost *:443>\n".
-			        $this->indent($this->addHstsHeader()).
+			    <VirtualHost *:443>\n\n".
+			        $this->indent($this->addHstsHeader(), 2).
 			        $this->indent($this->configureEssential()).PHP_EOL.
 					$this->indent($this->getSslCertificateLines(), 2).PHP_EOL.PHP_EOL.
 			        $this->indent($this->getConf('sslOptions'), 2).
