@@ -122,9 +122,12 @@ class VHostTemplate {
 	protected function configureEssential() : String {
 		$escaped_hostname = str_replace('.','\\.',$this->hostname);
 
-		return PHP_EOL.$this->indent(require __DIR__.'/Templates/name.php')
+		return PHP_EOL.$this->indent($this->getConf('name', [
+				'hostname' => $this->hostname,
+				'documentRoot' => $this->documentRoot,
+			]))
 			.PHP_EOL
-			.PHP_EOL.$this->indent(file_get_contents(__DIR__.'/Templates/blockHidden.conf'))
+			.PHP_EOL.$this->indent($this->getConf('blockHidden'))
 
 			."
 		    RewriteEngine On
@@ -146,7 +149,23 @@ class VHostTemplate {
 		    CustomLog \${APACHE_LOG_DIR}/{$this->hostname}.access.log \"%p %h %l %u %t \\\"%r\\\" %>s %O \\\"%{Referer}i\\\" \\\"%{User-Agent}i\\\"\"
 			\n"
 
-			.file_get_contents(__DIR__.'/Templates/common.conf');
+			.$this->getConf('common');
+	}
+
+	protected function getConf(string $name, array $variables = null) : string
+	{
+		$filename = __DIR__."/Templates/$name";
+
+		if (isset($variables)) {
+			extract($variables);
+			return require "$filename.php";
+		}
+
+		if (!is_readable("$filename.conf")) {
+			throw new \InvalidArgumentException("$filename.conf is not readable.");
+		}
+
+		return file_get_contents("$filename.conf");
 	}
 
 	protected function configureRequireSSL() : String {
