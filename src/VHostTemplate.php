@@ -132,15 +132,14 @@ class VHostTemplate {
 			'documentRoot' => $this->documentRoot,
 		];
 
-		return PHP_EOL.$this->indent($this->getConf('name', $variables))
-			.PHP_EOL
-			.PHP_EOL.$this->indent($this->getConf('blockHidden'))
-			.PHP_EOL.$this->indent($this->getConf('redirectToPrimaryHost', $variables))
-
-			.PHP_EOL.PHP_EOL.$this->indent($this->getDirectoryOptions())
-			.PHP_EOL.PHP_EOL.$this->indent($this->getConf('logging', $variables)).PHP_EOL.PHP_EOL
-
-			.$this->indent($this->getConf('common'));
+		return $this->indent(PHP_EOL
+			.$this->getConf('name', $variables).PHP_EOL.PHP_EOL
+			.$this->getConf('blockHidden').PHP_EOL
+			.$this->getConf('redirectToPrimaryHost', $variables).PHP_EOL.PHP_EOL
+			.$this->getDirectoryOptions().PHP_EOL.PHP_EOL
+			.$this->getConf('logging', $variables).PHP_EOL.PHP_EOL
+			.$this->getConf('common')
+		);
 	}
 
 	protected function getConf(string $name, array $variables = null) : string
