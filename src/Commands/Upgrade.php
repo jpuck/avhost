@@ -1,4 +1,5 @@
 <?php
+
 namespace jpuck\avhost\Commands;
 
 use Symfony\Component\Console\Command\Command;
@@ -11,13 +12,16 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use jpuck\avhost\VHostTemplate;
 
-class Upgrade extends Command {
-    protected function configure(){
+class Upgrade extends Command
+{
+    protected function configure()
+    {
         $this->setName('upgrade')
             ->setDescription('Upgrade avhost to the latest release.');
     }
 
-    public function execute(InputInterface $input, OutputInterface $output){
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         $url = "https://api.github.com/repos/jpuck/avhost/releases/latest";
         $curl_handle=curl_init();
         curl_setopt($curl_handle, CURLOPT_URL, $url);
@@ -58,5 +62,4 @@ class Upgrade extends Command {
 
         chmod($localFilename, 0755);
     }
-
 }

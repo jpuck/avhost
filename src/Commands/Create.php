@@ -1,4 +1,5 @@
 <?php
+
 namespace jpuck\avhost\Commands;
 
 use Symfony\Component\Console\Command\Command;
@@ -11,8 +12,10 @@ use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use jpuck\avhost\VHostTemplate;
 
-class Create extends Command {
-    protected function configure(){
+class Create extends Command
+{
+    protected function configure()
+    {
         $this->setName('create')
             ->setDescription('Create a virtual host.')
             ->addArgument(
@@ -61,7 +64,8 @@ class Create extends Command {
             );
     }
 
-    public function execute(InputInterface $input, OutputInterface $output){
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         if($input->getOption('forbidden-default')){
             $opts['forbidden'] = true;
             $hostname = '0000-forbidden.example.com';
@@ -106,7 +110,8 @@ class Create extends Command {
         $process->run();
     }
 
-    protected function createSelfSignedCertificate(String $hostname){
+    protected function createSelfSignedCertificate(String $hostname)
+    {
         $ssl['crt'] = "/etc/ssl/certs/$hostname.crt";
         $ssl['key'] = "/etc/ssl/private/$hostname.key";
 

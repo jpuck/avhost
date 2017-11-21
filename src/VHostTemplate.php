@@ -1,4 +1,5 @@
 <?php
+
 namespace jpuck\avhost;
 
 use InvalidArgumentException;
