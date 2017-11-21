@@ -122,13 +122,9 @@ class VHostTemplate {
 	protected function configureEssential() : String {
 		$escaped_hostname = str_replace('.','\\.',$this->hostname);
 
-		return "
-		    ServerName {$this->hostname}
-		    ServerAlias www.{$this->hostname}
-		    ServerAdmin webmaster@{$this->hostname}
-		    DocumentRoot {$this->documentRoot}
-		    UseCanonicalName On
-		    ServerSignature Off
+		return PHP_EOL.$this->indent(require __DIR__.'/Templates/name.php')
+
+			."
 
 		    # Block access to all hidden files and directories with the exception of
 		    # the visible content from within the `/.well-known/` hidden directory.
@@ -229,7 +225,7 @@ class VHostTemplate {
 		while(--$length){
 			$indentation .= $indent;
 		}
-		return str_replace("\n", "\n$indentation", $text);
+		return preg_replace('/^/m', $indentation, $text);
 	}
 
 	public function __toString(){
