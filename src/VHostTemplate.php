@@ -123,18 +123,10 @@ class VHostTemplate {
 		$escaped_hostname = str_replace('.','\\.',$this->hostname);
 
 		return PHP_EOL.$this->indent(require __DIR__.'/Templates/name.php')
+			.PHP_EOL
+			.PHP_EOL.$this->indent(file_get_contents(__DIR__.'/Templates/blockHidden.conf'))
 
 			."
-
-		    # Block access to all hidden files and directories with the exception of
-		    # the visible content from within the `/.well-known/` hidden directory.
-		    # NOTE: returns 404 resource not found instead of traditional 403 forbidden
-		    RewriteEngine On
-		    RewriteCond %{REQUEST_URI} \"!(^|/)\\.well-known/([^./]+./?)+\$\" [NC]
-		    RewriteCond %{DOCUMENT_ROOT}%{SCRIPT_FILENAME} -d [OR]
-		    RewriteCond %{DOCUMENT_ROOT}%{SCRIPT_FILENAME} -f
-		    RewriteRule \"(^|/)\\.\" - [R=404,L]
-
 		    RewriteEngine On
 		    RewriteCond %{HTTPS} =on
 		    RewriteRule ^ - [env=proto:https]
