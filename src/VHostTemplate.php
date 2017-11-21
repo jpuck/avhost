@@ -200,25 +200,33 @@ class VHostTemplate {
 			"\n</VirtualHost>\n";
 	}
 
-	protected function configureHostSSL() : String {
-		if(isset($this->ssl['chn'])){
-			$SSLCertificateChainFile = "SSLCertificateChainFile {$this->ssl['chn']}";
-		} else {
-			$SSLCertificateChainFile = '';
+	protected function getSslCertificateLines() : string
+	{
+		if (!isset($this->ssl['crt'])) {
+			return '';
 		}
 
+		$sslCertificateLines = [
+			'SSLEngine on',
+			"SSLCertificateFile {$this->ssl['crt']}",
+			"SSLCertificateKeyFile {$this->ssl['key']}",
+		];
+
+		if(isset($this->ssl['chn'])){
+			$sslCertificateLines []= "SSLCertificateChainFile {$this->ssl['chn']}";
+		}
+
+		return implode(PHP_EOL, $sslCertificateLines);
+	}
+
+	protected function configureHostSSL() : String {
 		return
 			"<IfModule mod_ssl.c>
 			    <VirtualHost *:443>\n".
 			        $this->indent($this->addHstsHeader()).
-			        $this->indent($this->configureEssential()).
-
+			        $this->indent($this->configureEssential()).PHP_EOL.
+			        $this->indent($this->getSslCertificateLines(), 2).PHP_EOL.
 			        "
-			        SSLEngine on
-			        SSLCertificateFile {$this->ssl['crt']}
-			        SSLCertificateKeyFile {$this->ssl['key']}
-			        $SSLCertificateChainFile
-
 			        <FilesMatch \"\\.(cgi|shtml|phtml|php)\$\">
 			            SSLOptions +StdEnvVars
 			        </FilesMatch>
