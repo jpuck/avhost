@@ -136,10 +136,8 @@ class VHostTemplate {
 				$this->getDirectoryOptions()."
 		    </Directory>
 
-		    ErrorLog \${APACHE_LOG_DIR}/{$this->hostname}.error.log
-		    ErrorLogFormat \"%A [%{cu}t] [%-m:%l] %7F: %E: %M% ,\\ referer\\ %{Referer}i\"
-		    CustomLog \${APACHE_LOG_DIR}/{$this->hostname}.access.log \"%p %h %l %u %t \\\"%r\\\" %>s %O \\\"%{Referer}i\\\" \\\"%{User-Agent}i\\\"\"
-			\n"
+			"
+			.$this->indent($this->getConf('logging', $variables)).PHP_EOL.PHP_EOL
 
 			.$this->getConf('common');
 	}
