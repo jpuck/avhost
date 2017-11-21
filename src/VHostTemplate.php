@@ -8,7 +8,10 @@ class VHostTemplate {
 	protected $hostname = '';
 	protected $documentRoot = '';
 	protected $ssl = [];
-	protected $options = ['indexes' => false];
+	protected $options = [
+		'indexes' => false,
+		'realpaths' => true,
+	];
 
 	public function __construct(String $host, String $documentRoot, Array $options = null){
 		$this->hostname($host);
@@ -23,8 +26,27 @@ class VHostTemplate {
 		}
 	}
 
+	protected function getRealReadableFilename(string $filename, bool $isDirectory = false) : string
+	{
+		if (!$this->options['realpaths']) {
+			return $filename;
+		}
+
+		$realpath = realpath($filename);
+
+		if (empty($realpath)) {
+			throw new InvalidArgumentException("$filename is not readable.");
+		}
+
+		if ($isDirectory && (!is_dir($realpath))) {
+			throw new InvalidArgumentException("$filename is not a directory.");
+		}
+
+		return $realpath;
+	}
+
 	protected function setOptions(Array $options){
-		foreach(['indexes','forbidden'] as $option){
+		foreach(['indexes', 'forbidden', 'realpaths'] as $option){
 			if(isset($options[$option])){
 				if(!is_bool($options[$option])){
 					throw new InvalidArgumentException(
@@ -50,14 +72,9 @@ class VHostTemplate {
 
 	public function documentRoot(String $documentRoot = null) : String {
 		if(isset($documentRoot)){
-			if(is_dir($documentRoot)){
-				$this->documentRoot = realpath($documentRoot);
-			} else {
-				throw new InvalidArgumentException(
-					"$documentRoot doesn't exist."
-				);
-			}
+			$this->documentRoot = $this->getRealReadableFilename($documentRoot, true);
 		}
+
 		return $this->documentRoot;
 	}
 
@@ -74,12 +91,8 @@ class VHostTemplate {
 						"SSL $file is required."
 					);
 				}
-				if(!file_exists($ssl[$file])){
-					throw new InvalidArgumentException(
-						"{$ssl[$file]} does not exist."
-					);
-				}
-				$this->ssl[$file] = realpath($ssl[$file]);
+
+				$this->ssl[$file] = $this->getRealReadableFilename($ssl[$file]);
 			}
 
 			// default required

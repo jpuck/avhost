@@ -21,6 +21,7 @@ class VHostTemplateTest extends PHPUnit_Framework_TestCase
             'ssl' => ['ssl.example.com', $tmp, [
                     'key' => '/etc/ssl/private/ssl.example.com.key',
                     'crt' => '/etc/ssl/certs/ssl.example.com.pem',
+                    'realpaths' => false,
                 ],
             ],
         ];
