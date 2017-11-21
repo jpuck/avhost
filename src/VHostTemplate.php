@@ -120,16 +120,15 @@ class VHostTemplate {
 	}
 
 	protected function configureEssential() : String {
+		$variables = [
+			'hostname' => $this->hostname,
+			'documentRoot' => $this->documentRoot,
+		];
 
-		return PHP_EOL.$this->indent($this->getConf('name', [
-				'hostname' => $this->hostname,
-				'documentRoot' => $this->documentRoot,
-			]))
+		return PHP_EOL.$this->indent($this->getConf('name', $variables))
 			.PHP_EOL
 			.PHP_EOL.$this->indent($this->getConf('blockHidden'))
-			.PHP_EOL.$this->indent($this->getConf('redirectToPrimaryHost', [
-				'hostname' => $this->hostname,
-			]))
+			.PHP_EOL.$this->indent($this->getConf('redirectToPrimaryHost', $variables))
 
 			."
 
