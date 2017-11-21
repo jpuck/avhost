@@ -145,14 +145,14 @@ class VHostTemplate {
 			'documentRoot' => $this->documentRoot,
 		];
 
-		return $this->indent(PHP_EOL
+		return PHP_EOL
 			.$this->getConf('name', $variables).PHP_EOL.PHP_EOL
 			.$this->getConf('blockHidden').PHP_EOL
 			.$this->getConf('redirectToPrimaryHost', $variables).PHP_EOL.PHP_EOL
 			.$this->getDirectoryOptions().PHP_EOL.PHP_EOL
 			.$this->getConf('logging', $variables).PHP_EOL.PHP_EOL
 			.$this->getConf('common')
-		);
+		;
 	}
 
 	protected function getConf(string $name, array $variables = null) : string
@@ -192,7 +192,7 @@ class VHostTemplate {
 
 		return
 			"<VirtualHost *:80>\n$requireSsl".
-			$this->configureEssential().
+			$this->indent($this->configureEssential()).
 			"\n</VirtualHost>\n";
 	}
 
@@ -220,7 +220,7 @@ class VHostTemplate {
 			"<IfModule mod_ssl.c>
 			    <VirtualHost *:443>\n\n".
 			        $this->indent($this->addHstsHeader(), 2).
-			        $this->indent($this->configureEssential()).PHP_EOL.
+			        $this->indent($this->configureEssential(), 2).PHP_EOL.
 					$this->indent($this->getSslCertificateLines(), 2).PHP_EOL.PHP_EOL.
 			        $this->indent($this->getConf('sslOptions'), 2).
 			        "
