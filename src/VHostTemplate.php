@@ -112,15 +112,18 @@ class VHostTemplate {
 			$Indexes = '-Indexes';
 		}
 
-		return "
+		$options = [
+			"Options $Indexes +FollowSymLinks -MultiViews",
+			'AllowOverride All',
+			'Require all granted',
+		];
 
-		    <Directory {$this->documentRoot}>
-		        Options $Indexes +FollowSymLinks -MultiViews
-		        AllowOverride All
-		        Require all granted
-		    </Directory>
+		$optionBlock = PHP_EOL;
+		foreach ($options as $option) {
+			$optionBlock .= $this->indent($option).PHP_EOL;
+		}
 
-		";
+		return "<Directory {$this->documentRoot}>$optionBlock</Directory>";
 	}
 
 	protected function configureEssential() : String {
@@ -134,8 +137,8 @@ class VHostTemplate {
 			.PHP_EOL.$this->indent($this->getConf('blockHidden'))
 			.PHP_EOL.$this->indent($this->getConf('redirectToPrimaryHost', $variables))
 
-			.$this->getDirectoryOptions()
-			.$this->indent($this->getConf('logging', $variables)).PHP_EOL.PHP_EOL
+			.PHP_EOL.PHP_EOL.$this->indent($this->getDirectoryOptions())
+			.PHP_EOL.PHP_EOL.$this->indent($this->getConf('logging', $variables)).PHP_EOL.PHP_EOL
 
 			.$this->getConf('common');
 	}
