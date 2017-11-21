@@ -176,7 +176,7 @@ class VHostTemplate {
 			return "";
 		}
 
-		return $this->getConf('requireSsl');
+		return PHP_EOL.$this->getConf('requireSsl');
 	}
 
 	protected function addHstsHeader() : String {
@@ -192,9 +192,10 @@ class VHostTemplate {
 	}
 
 	protected function configureHostPlain() : String {
+		$requireSsl = $this->indent($this->configureRequireSSL());
+
 		return
-			"<VirtualHost *:80>\n".
-			$this->indent($this->configureRequireSSL()).
+			"<VirtualHost *:80>\n$requireSsl".
 			$this->configureEssential().
 			"\n</VirtualHost>\n";
 	}
@@ -239,7 +240,11 @@ class VHostTemplate {
 		while(--$length){
 			$indentation .= $indent;
 		}
-		return preg_replace('/^/m', $indentation, $text);
+
+		$indented = preg_replace('/^/m', $indentation, $text);
+
+		// strip those indented newlines
+		return preg_replace('/^    $/m', '', $indented);
 	}
 
 	public function __toString(){
