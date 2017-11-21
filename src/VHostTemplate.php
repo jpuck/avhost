@@ -194,7 +194,7 @@ class VHostTemplate {
 	protected function configureHostPlain() : String {
 		return
 			"<VirtualHost *:80>\n".
-			$this->configureRequireSSL().
+			$this->indent($this->configureRequireSSL()).
 			$this->configureEssential().
 			"\n</VirtualHost>\n";
 	}
