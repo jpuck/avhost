@@ -166,11 +166,7 @@ class VHostTemplate {
 			return "";
 		}
 
-		return "
-		    RewriteEngine On
-		    RewriteCond %{HTTPS} off
-		    RewriteRule (.*) https://%{SERVER_NAME}%{REQUEST_URI} [R=301,L]
-		";
+		return file_get_contents(__DIR__.'/Templates/requireSsl.conf');
 	}
 
 	protected function addHstsHeader() : String {
