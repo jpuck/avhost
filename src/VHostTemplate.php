@@ -163,7 +163,7 @@ class VHostTemplate {
 			return "";
 		}
 
-		return file_get_contents(__DIR__.'/Templates/requireSsl.conf');
+		return $this->getConf('requireSsl');
 	}
 
 	protected function addHstsHeader() : String {
