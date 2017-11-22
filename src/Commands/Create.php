@@ -26,18 +26,9 @@ class Create extends Command
                 'directory',
                 InputArgument::REQUIRED,
                 'File system folder to serve as document root'
-            )->addOption(
-                'indexes',
-                null,
-                InputOption::VALUE_NONE,
-                'Allow directory contents listing indexes'
-            )->addOption(
-                'override',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'Values for the AllowOverride directive',
-                'None'
-            )->addOption(
+            );
+
+        $this->addOption(
                 'ssl-certificate',
                 'c',
                 InputOption::VALUE_REQUIRED,
@@ -63,6 +54,22 @@ class Create extends Command
                 InputOption::VALUE_NONE,
                 'Do not redirect plain hosts to encrypted connection'
             )->addOption(
+                'indexes',
+                null,
+                InputOption::VALUE_NONE,
+                'Allow directory contents listing indexes'
+            )->addOption(
+                'override',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Values for the AllowOverride directive',
+                'None'
+            )->addOption(
+                'forbidden-default',
+                null,
+                InputOption::VALUE_NONE,
+                'Forbid requests for undefined hosts'
+            )->addOption(
                 'stdout',
                 null,
                 InputOption::VALUE_NONE,
@@ -72,11 +79,6 @@ class Create extends Command
                 null,
                 InputOption::VALUE_NONE,
                 'Skip validation for file paths'
-            )->addOption(
-                'forbidden-default',
-                null,
-                InputOption::VALUE_NONE,
-                'Forbid requests for undefined hosts'
             );
     }
 
