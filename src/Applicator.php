@@ -161,6 +161,6 @@ class Applicator
         $indented = preg_replace('/^/m', $indentation, $text);
 
         // strip those indented newlines
-        return preg_replace('/^    $/m', '', $indented);
+        return preg_replace("/^$indentation$/m", '', $indented);
     }
 }
