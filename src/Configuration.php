@@ -68,7 +68,7 @@ class Configuration
         }
 
         if (isset($options['meta'])) {
-            $this->setMetaOptions($options['meta']);
+            $this->meta($options['meta']);
         }
 
         foreach (['indexes', 'forbidden'] as $option) {
@@ -88,22 +88,23 @@ class Configuration
     {
         return array_replace($this->options, [
             'ssl' => $this->ssl(),
-            'meta' => $this->getMetaOptions(),
+            'meta' => $this->meta(),
         ]);
     }
 
-    public function getMetaOptions()
+    public function meta(array $options = null)
     {
-        return $this->metaOptions;
-    }
+        if (is_null($options)) {
+            return $this->metaOptions;
+        }
 
-    public function setMetaOptions(array $options)
-    {
         foreach (['realpaths'] as $option) {
             if (isset($options[$option])) {
                 $this->setBoolean($this->metaOptions, $option, $options[$option]);
             }
         }
+
+        return $this->metaOptions;
     }
 
     protected function setBoolean(array &$array, string $name, $value)
@@ -122,7 +123,7 @@ class Configuration
 
     public function getRealReadableFilename(string $filename, bool $isDirectory = false) : string
     {
-        if (!$this->getMetaOptions()['realpaths']) {
+        if (!$this->meta()['realpaths']) {
             return $filename;
         }
 
