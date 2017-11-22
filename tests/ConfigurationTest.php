@@ -51,6 +51,18 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
                 'hostname' => 'example.com',
                 'documentRoot' => static::$tmp,
             ]],
+            [[
+                'hostname' => 'ssl.example.com',
+                'documentRoot' => '/var/www/html',
+                'meta' => [
+                    'realpaths' => false,
+                ],
+                'ssl' => [
+                    'key' => '/etc/ssl/private/ssl.example.com.key',
+                    'certificate' => '/etc/ssl/certs/ssl.example.com.pem',
+                    'required' => true,
+                ],
+            ]],
         ];
     }
 

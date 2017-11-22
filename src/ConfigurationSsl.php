@@ -3,14 +3,25 @@
 namespace jpuck\avhost;
 
 use InvalidArgumentException;
+use JsonSerializable;
 
-class ConfigurationSsl
+class ConfigurationSsl implements JsonSerializable
 {
     protected $configuration;
     protected $required;
     protected $certificate;
     protected $key;
     protected $chain;
+    protected static $attributes = [
+        'required' => [
+            'required',
+            'certificate',
+            'key',
+        ],
+        'optional' => [
+            'chain',
+        ],
+    ];
 
     public function __construct(Configuration $configuration, bool $required, string $certificate, string $key, string $chain = null)
     {
@@ -27,12 +38,7 @@ class ConfigurationSsl
 
     public static function createFromArray(array $properties)
     {
-        $required = [
-            'configuration',
-            'required',
-            'certificate',
-            'key',
-        ];
+        $required = array_merge(['configuration'], static::$attributes['required']);
 
         foreach ($required as $property) {
             if (empty($properties[$property])) {
@@ -41,8 +47,10 @@ class ConfigurationSsl
             $validated[$property] = $properties[$property];
         }
 
-        if (!empty($properties['chain'])) {
-            $validated['chain'] = $properties['chain'];
+        foreach (static::$attributes['optional'] as $property) {
+            if (isset($properties[$property])) {
+                $validated[$property] = $properties[$property];
+            }
         }
 
         return new static(...array_values($validated));
@@ -56,6 +64,21 @@ class ConfigurationSsl
     public function __isset(string $property)
     {
         return isset($this->$property);
+    }
+
+    public function jsonSerialize()
+    {
+        foreach (static::$attributes['required'] as $property) {
+            $configuration[$property] = $this->$property;
+        }
+
+        foreach (static::$attributes['optional'] as $property) {
+            if (isset($this->$property)) {
+                $configuration[$property] = $this->$property;
+            }
+        }
+
+        return $configuration;
     }
 }
 
