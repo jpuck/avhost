@@ -57,6 +57,11 @@ class Create extends Command
                 InputOption::VALUE_NONE,
                 'Do not redirect plain hosts to encrypted connection'
             )->addOption(
+                'stdout',
+                null,
+                InputOption::VALUE_NONE,
+                'Print out the configuration file instead of saving to disk'
+            )->addOption(
                 'forbidden-default',
                 null,
                 InputOption::VALUE_NONE,
@@ -104,9 +109,14 @@ class Create extends Command
             $opts['ssl'] = $ssl;
         }
 
-        $filename = "/etc/apache2/sites-available/$hostname.conf";
         $configuration = new Configuration($hostname, $directory, $opts ?? []);
 
+        if ($input->getOption('stdout')) {
+            echo $configuration;
+            return;
+        }
+
+        $filename = "/etc/apache2/sites-available/$hostname.conf";
         file_put_contents($filename, $configuration);
 
         $command = "a2ensite $hostname.conf";
