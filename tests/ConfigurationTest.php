@@ -19,9 +19,12 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
         return [
             'plain' => ['example.com', $tmp],
             'ssl' => ['ssl.example.com', $tmp, [
-                    'key' => '/etc/ssl/private/ssl.example.com.key',
-                    'crt' => '/etc/ssl/certs/ssl.example.com.pem',
                     'realpaths' => false,
+                    'ssl' => [
+                        'key' => '/etc/ssl/private/ssl.example.com.key',
+                        'certificate' => '/etc/ssl/certs/ssl.example.com.pem',
+                        'required' => true,
+                    ],
                 ],
             ],
         ];

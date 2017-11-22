@@ -8,11 +8,11 @@ class Configuration
 {
     protected $hostname = '';
     protected $documentRoot = '';
-    protected $ssl = [];
     protected $options = [
         'indexes' => false,
         'realpaths' => true,
     ];
+    protected $configurationSsl;
     protected $applicator;
 
     public function __construct(string $host, string $documentRoot, array $options = null)
@@ -23,10 +23,6 @@ class Configuration
 
         $this->hostname($host);
         $this->documentRoot($documentRoot);
-
-        if(isset($options['crt']) || isset($options['key'])){
-            $this->ssl($options);
-        }
 
         $this->applicator = new Applicator($this);
     }
@@ -55,60 +51,48 @@ class Configuration
         return $this->documentRoot;
     }
 
-    public function ssl(array $ssl = null) : array
+    public function ssl(array $properties = null)
     {
-        if (is_null($ssl)) {
-            return $this->ssl;
+        if (isset($properties)) {
+            $properties['configuration'] = $this;
+            $this->configurationSsl = ConfigurationSsl::createFromArray($properties);
         }
 
-        $files = ['crt','key'];
-        if(!empty($ssl['chn'])){
-            $files []= 'chn';
-        }
-
-        foreach ($files as $file) {
-            if (empty($ssl[$file])) {
-                throw new InvalidArgumentException("SSL $file is required.");
-            }
-
-            $this->ssl[$file] = $this->getRealReadableFilename($ssl[$file]);
-        }
-
-        // default required
-        $this->ssl['req'] = true;
-
-        if ($this->options()['forbidden'] ?? false) {
-            $this->ssl['req'] = false;
-        }
-
-        if (isset($ssl['req'])) {
-            if (!is_bool($ssl['req'])) {
-                throw new InvalidArgumentException('SSL required is not boolean');
-            }
-            $this->ssl['req'] = $ssl['req'];
-        }
-
-        return $this->ssl;
+        return $this->configurationSsl;
     }
 
     public function options(array $options = null) : array
     {
         if (is_null($options)) {
-            return $this->options;
+            return $this->getOptions();
         }
 
         foreach(['indexes', 'forbidden', 'realpaths'] as $option){
-            if(isset($options[$option])){
-                if(!is_bool($options[$option])){
-                    throw new InvalidArgumentException(
-                        "if declared, $option option must be boolean."
-                    );
-                }
-                $this->options[$option] = $options[$option];
+            if (isset($options[$option])) {
+                $this->setBooleanOption($option, $options[$option]);
             }
         }
 
-        return $this->options;
+        if (isset($options['ssl'])) {
+            $this->ssl($options['ssl']);
+            unset($options['ssl']);
+        }
+
+        return $this->getOptions();
+    }
+
+    public function getOptions() : array
+    {
+        return array_replace($this->options, ['ssl' => $this->ssl()]);
+    }
+
+    protected function setBooleanOption(string $name, $value)
+    {
+        if (!is_bool($value)) {
+            throw new NonBoolean("$option option must be boolean.");
+        }
+
+        $this->options[$name] = $value;
     }
 
     public function __toString()
@@ -116,7 +100,7 @@ class Configuration
         return (string) $this->applicator;
     }
 
-    protected function getRealReadableFilename(string $filename, bool $isDirectory = false) : string
+    public function getRealReadableFilename(string $filename, bool $isDirectory = false) : string
     {
         if (!$this->options()['realpaths']) {
             return $filename;
@@ -135,3 +119,5 @@ class Configuration
         return $realpath;
     }
 }
+
+class NonBoolean extends InvalidArgumentException {}

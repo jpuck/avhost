@@ -35,7 +35,7 @@ class Applicator
 
     protected function getRequireSSL() : string
     {
-        if(empty($this->configuration->ssl()['req'])){
+        if(empty($this->configuration->ssl()->required)){
             return "";
         }
 
@@ -107,7 +107,7 @@ class Applicator
 
     protected function getHstsHeader() : string
     {
-        if(empty($this->configuration->ssl()['req'])){
+        if(empty($this->configuration->ssl()->required)){
             return "";
         }
 
@@ -118,18 +118,18 @@ class Applicator
     {
         $ssl = $this->configuration->ssl();
 
-        if (!isset($ssl['crt'])) {
+        if (!isset($ssl->certificate)) {
             return '';
         }
 
         $sslCertificateLines = [
             'SSLEngine on',
-            "SSLCertificateFile {$ssl['crt']}",
-            "SSLCertificateKeyFile {$ssl['key']}",
+            "SSLCertificateFile {$ssl->certificate}",
+            "SSLCertificateKeyFile {$ssl->key}",
         ];
 
-        if(isset($ssl['chn'])){
-            $sslCertificateLines []= "SSLCertificateChainFile {$ssl['chn']}";
+        if(isset($ssl->chain)){
+            $sslCertificateLines []= "SSLCertificateChainFile {$ssl->chain}";
         }
 
         return implode(PHP_EOL, $sslCertificateLines).PHP_EOL;
