@@ -4,7 +4,8 @@ namespace jpuck\avhost;
 
 use InvalidArgumentException;
 
-class Configuration {
+class Configuration
+{
     protected $hostname = '';
     protected $documentRoot = '';
     protected $ssl = [];
