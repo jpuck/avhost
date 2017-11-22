@@ -35,10 +35,8 @@ class Configuration
             return $this->hostname;
         }
 
-        if(!ctype_alnum(str_replace(['-','.'], '', $hostname))){
-            throw new InvalidArgumentException(
-                "Hostname may only contain alphanumeric characters."
-            );
+        if (!ctype_alnum(str_replace(['-','.'], '', $hostname))) {
+            throw new BadHostname("Invalid characters in: $hostname");
         }
 
         return $this->hostname = strtolower($hostname);
@@ -142,4 +140,5 @@ class Configuration
     }
 }
 
+class BadHostname extends InvalidArgumentException {}
 class NonBoolean extends InvalidArgumentException {}
