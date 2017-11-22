@@ -71,15 +71,17 @@ class VHostTemplate {
 
     public function hostname(string $hostname = null) : string
     {
-        if(isset($hostname)){
-            if(!ctype_alnum(str_replace(['-','.'], '', $hostname))){
-                throw new InvalidArgumentException(
-                    "Hostname may only contain alphanumeric characters."
-                );
-            }
-            $this->hostname = strtolower($hostname);
+        if (is_null($hostname)) {
+            return $this->hostname;
         }
-        return $this->hostname;
+
+        if(!ctype_alnum(str_replace(['-','.'], '', $hostname))){
+            throw new InvalidArgumentException(
+                "Hostname may only contain alphanumeric characters."
+            );
+        }
+
+        return $this->hostname = strtolower($hostname);
     }
 
     public function documentRoot(string $documentRoot = null) : string
