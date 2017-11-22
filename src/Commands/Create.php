@@ -62,6 +62,11 @@ class Create extends Command
                 InputOption::VALUE_NONE,
                 'Print out the configuration file instead of saving to disk'
             )->addOption(
+                'no-realpaths',
+                null,
+                InputOption::VALUE_NONE,
+                'Skip validation for file paths'
+            )->addOption(
                 'forbidden-default',
                 null,
                 InputOption::VALUE_NONE,
@@ -107,6 +112,10 @@ class Create extends Command
 
         if (isset($ssl)) {
             $opts['ssl'] = $ssl;
+        }
+
+        if($input->getOption('no-realpaths')){
+            $opts['meta']['realpaths'] = false;
         }
 
         $configuration = new Configuration($hostname, $directory, $opts ?? []);
