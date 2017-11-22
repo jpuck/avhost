@@ -16,57 +16,18 @@ class VHostTemplate {
 
     public function __construct(string $host, string $documentRoot, array $options = null)
     {
-        $this->hostname($host);
-        $this->documentRoot($documentRoot);
-
         if(isset($options)){
             $this->options($options);
         }
+
+        $this->hostname($host);
+        $this->documentRoot($documentRoot);
 
         if(isset($options['crt']) || isset($options['key'])){
             $this->ssl($options);
         }
 
         $this->applicator = new Applicator($this);
-    }
-
-    protected function getRealReadableFilename(string $filename, bool $isDirectory = false) : string
-    {
-        if (!$this->options()['realpaths']) {
-            return $filename;
-        }
-
-        $realpath = realpath($filename);
-
-        if (empty($realpath)) {
-            throw new InvalidArgumentException("$filename is not readable.");
-        }
-
-        if ($isDirectory && (!is_dir($realpath))) {
-            throw new InvalidArgumentException("$filename is not a directory.");
-        }
-
-        return $realpath;
-    }
-
-    public function options(array $options = null) : array
-    {
-        if (is_null($options)) {
-            return $this->options;
-        }
-
-        foreach(['indexes', 'forbidden', 'realpaths'] as $option){
-            if(isset($options[$option])){
-                if(!is_bool($options[$option])){
-                    throw new InvalidArgumentException(
-                        "if declared, $option option must be boolean."
-                    );
-                }
-                $this->options[$option] = $options[$option];
-            }
-        }
-
-        return $this->options;
     }
 
     public function hostname(string $hostname = null) : string
@@ -129,8 +90,47 @@ class VHostTemplate {
         return $this->ssl;
     }
 
+    public function options(array $options = null) : array
+    {
+        if (is_null($options)) {
+            return $this->options;
+        }
+
+        foreach(['indexes', 'forbidden', 'realpaths'] as $option){
+            if(isset($options[$option])){
+                if(!is_bool($options[$option])){
+                    throw new InvalidArgumentException(
+                        "if declared, $option option must be boolean."
+                    );
+                }
+                $this->options[$option] = $options[$option];
+            }
+        }
+
+        return $this->options;
+    }
+
     public function __toString()
     {
         return (string) $this->applicator;
+    }
+
+    protected function getRealReadableFilename(string $filename, bool $isDirectory = false) : string
+    {
+        if (!$this->options()['realpaths']) {
+            return $filename;
+        }
+
+        $realpath = realpath($filename);
+
+        if (empty($realpath)) {
+            throw new InvalidArgumentException("$filename is not readable.");
+        }
+
+        if ($isDirectory && (!is_dir($realpath))) {
+            throw new InvalidArgumentException("$filename is not a directory.");
+        }
+
+        return $realpath;
     }
 }
