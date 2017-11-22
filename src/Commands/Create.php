@@ -76,9 +76,9 @@ class Create extends Command
         }
 
         // check explicit values first
-        $ssl['crt'] = $input->getOption('ssl-certificate');
+        $ssl['certificate'] = $input->getOption('ssl-certificate');
         $ssl['key'] = $input->getOption('ssl-key');
-        $ssl['chn'] = $input->getOption('ssl-chain');
+        $ssl['chain'] = $input->getOption('ssl-chain');
         $ssl = array_filter($ssl);
 
         if(empty($ssl)){
@@ -88,21 +88,26 @@ class Create extends Command
             if($input->getOption('ssl-self-sign')){
                 $ssl = $this->createSelfSignedCertificate($hostname);
             }
+        } else {
+            $ssl['required'] = true;
         }
 
         if(!empty($ssl) && $input->getOption('no-require-ssl')){
-            $ssl['req'] = false;
+            $ssl['required'] = false;
         }
 
         if($input->getOption('indexes')){
             $opts['indexes'] = true;
         }
 
-        file_put_contents("/etc/apache2/sites-available/$hostname.conf",
-            new Configuration($hostname, $directory,
-                array_merge($ssl ?? [], $opts ?? [])
-            )
-        );
+        if (isset($ssl)) {
+            $opts['ssl'] = $ssl;
+        }
+
+        $filename = "/etc/apache2/sites-available/$hostname.conf";
+        $configuration = new Configuration($hostname, $directory, $opts ?? []);
+
+        file_put_contents($filename, $configuration);
 
         $command = "a2ensite $hostname.conf";
 
@@ -112,7 +117,7 @@ class Create extends Command
 
     protected function createSelfSignedCertificate(String $hostname)
     {
-        $ssl['crt'] = "/etc/ssl/certs/$hostname.crt";
+        $ssl['certificate'] = "/etc/ssl/certs/$hostname.crt";
         $ssl['key'] = "/etc/ssl/private/$hostname.key";
 
         foreach($ssl as $file){
@@ -129,7 +134,7 @@ class Create extends Command
 
         $command = "openssl req -x509 -nodes -sha256 -days 3650 ".
             "-newkey rsa:2048 -keyout $ssl[key] ".
-            "-out $ssl[crt] ".
+            "-out $ssl[certificate] ".
             "-subj '/CN=$hostname'";
 
         $process = new Process($command);
@@ -144,6 +149,7 @@ class Create extends Command
         // http://unix.stackexchange.com/a/131400/148062
         echo $process->getErrorOutput();
 
+        $ssl['required'] = false;
         return $ssl;
     }
 }
