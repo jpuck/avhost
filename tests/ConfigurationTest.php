@@ -44,13 +44,21 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    public function test_can_cast_to_json()
+    public function arrayConfigurationDataProvider()
     {
-        $expected = [
-            'hostname' => 'example.com',
-            'documentRoot' => static::$tmp,
+        return [
+            [[
+                'hostname' => 'example.com',
+                'documentRoot' => static::$tmp,
+            ]],
         ];
+    }
 
+    /**
+     * @dataProvider arrayConfigurationDataProvider
+     */
+    public function test_can_cast_to_json(array $expected)
+    {
         $configuration = new Configuration($expected['hostname'], $expected['documentRoot']);
         $actual = json_decode(json_encode($configuration), true);
 
