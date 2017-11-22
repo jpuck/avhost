@@ -72,7 +72,7 @@ class Applicator
 
         $options = [
             "Options $Indexes +FollowSymLinks -MultiViews",
-            'AllowOverride All',
+            'AllowOverride None',
             'Require all granted',
         ];
 
