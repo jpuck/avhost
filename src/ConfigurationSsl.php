@@ -41,7 +41,7 @@ class ConfigurationSsl implements JsonSerializable
         $required = array_merge(['configuration'], static::$attributes['required']);
 
         foreach ($required as $property) {
-            if (empty($properties[$property])) {
+            if (!isset($properties[$property])) {
                 throw new MissingSslParameter("Missing parameter: $property");
             }
             $validated[$property] = $properties[$property];
