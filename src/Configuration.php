@@ -19,7 +19,7 @@ class Configuration
 
     public function __construct(string $host, string $documentRoot, array $options = null)
     {
-        if(isset($options)){
+        if (isset($options)) {
             $this->options($options);
         }
 
@@ -44,7 +44,7 @@ class Configuration
 
     public function documentRoot(string $documentRoot = null) : string
     {
-        if(isset($documentRoot)){
+        if (isset($documentRoot)) {
             $this->documentRoot = $this->getRealReadableFilename($documentRoot, true);
         }
 
@@ -71,7 +71,7 @@ class Configuration
             $this->setMetaOptions($options['meta']);
         }
 
-        foreach(['indexes', 'forbidden'] as $option){
+        foreach (['indexes', 'forbidden'] as $option) {
             if (isset($options[$option])) {
                 $this->setBoolean($this->options, $option, $options[$option]);
             }
@@ -99,7 +99,7 @@ class Configuration
 
     public function setMetaOptions(array $options)
     {
-        foreach(['realpaths'] as $option){
+        foreach (['realpaths'] as $option) {
             if (isset($options[$option])) {
                 $this->setBoolean($this->metaOptions, $option, $options[$option]);
             }
