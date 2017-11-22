@@ -95,38 +95,37 @@ class VHostTemplate {
 
     public function ssl(array $ssl = null) : array
     {
-        if(isset($ssl)){
-            $files = ['crt','key'];
-            if(!empty($ssl['chn'])){
-                $files[]= 'chn';
-            }
-
-            foreach($files as $file){
-                if(!isset($ssl[$file])){
-                    throw new InvalidArgumentException(
-                        "SSL $file is required."
-                    );
-                }
-
-                $this->ssl[$file] = $this->getRealReadableFilename($ssl[$file]);
-            }
-
-            // default required
-            $this->ssl['req'] = true;
-
-            if($this->options()['forbidden'] ?? false){
-                $this->ssl['req'] = false;
-            }
-
-            if(isset($ssl['req'])){
-                if(!is_bool($ssl['req'])){
-                    throw new InvalidArgumentException(
-                        "if declared, SSL required must be boolean."
-                    );
-                }
-                $this->ssl['req'] = $ssl['req'];
-            }
+        if (is_null($ssl)) {
+            return $this->ssl;
         }
+
+        $files = ['crt','key'];
+        if(!empty($ssl['chn'])){
+            $files []= 'chn';
+        }
+
+        foreach ($files as $file) {
+            if (empty($ssl[$file])) {
+                throw new InvalidArgumentException("SSL $file is required.");
+            }
+
+            $this->ssl[$file] = $this->getRealReadableFilename($ssl[$file]);
+        }
+
+        // default required
+        $this->ssl['req'] = true;
+
+        if ($this->options()['forbidden'] ?? false) {
+            $this->ssl['req'] = false;
+        }
+
+        if (isset($ssl['req'])) {
+            if (!is_bool($ssl['req'])) {
+                throw new InvalidArgumentException('SSL required is not boolean');
+            }
+            $this->ssl['req'] = $ssl['req'];
+        }
+
         return $this->ssl;
     }
 
