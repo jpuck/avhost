@@ -1,4 +1,4 @@
 /vendor/
-/coverage/
+/tests/coverage/
 /avhost.phar
 /nbproject/private/
