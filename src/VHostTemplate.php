@@ -152,7 +152,7 @@ class VHostTemplate {
 			.$this->getDirectoryOptions().PHP_EOL.PHP_EOL
 			.$this->getConf('logging', $variables).PHP_EOL.PHP_EOL
 			.$this->getConf('common')
-		;
+			.PHP_EOL;
 	}
 
 	protected function getConf(string $name, array $variables = null) : string
@@ -188,12 +188,13 @@ class VHostTemplate {
 	}
 
 	protected function configureHostPlain() : String {
-		$requireSsl = $this->indent($this->configureRequireSSL());
-
 		return
-			"<VirtualHost *:80>\n$requireSsl".
-			$this->indent($this->configureEssential()).
-			"\n</VirtualHost>\n";
+			'<VirtualHost *:80>'.PHP_EOL.
+				$this->indent(
+					$this->configureRequireSSL().
+					$this->configureEssential()
+				).
+			'</VirtualHost>'.PHP_EOL;
 	}
 
 	protected function getSslCertificateLines() : string
@@ -212,20 +213,27 @@ class VHostTemplate {
 			$sslCertificateLines []= "SSLCertificateChainFile {$this->ssl['chn']}";
 		}
 
-		return implode(PHP_EOL, $sslCertificateLines);
+		return implode(PHP_EOL, $sslCertificateLines).PHP_EOL;
 	}
 
 	protected function configureHostSSL() : String {
 		return
-			"<IfModule mod_ssl.c>
-			    <VirtualHost *:443>\n\n".
-			        $this->indent($this->addHstsHeader(), 2).
-			        $this->indent($this->configureEssential(), 2).PHP_EOL.
-					$this->indent($this->getSslCertificateLines(), 2).PHP_EOL.PHP_EOL.
-			        $this->indent($this->getConf('sslOptions'), 2).
-			        "
-			    </VirtualHost>
-			</IfModule>\n";
+			'<IfModule mod_ssl.c>'.PHP_EOL.
+		        $this->indent($this->getHostSslContent()).
+			'</IfModule>'.PHP_EOL;
+	}
+
+	protected function getHostSslContent() : string
+	{
+		return
+			'<VirtualHost *:443>'.PHP_EOL.PHP_EOL.
+				$this->indent(
+					$this->addHstsHeader().
+					$this->configureEssential().
+					$this->getSslCertificateLines().PHP_EOL.
+					$this->getConf('sslOptions')
+				).PHP_EOL.
+			'</VirtualHost>'.PHP_EOL;
 	}
 
 	protected function indent(String $text, Int $length = 1, $indent = "    "){
@@ -242,11 +250,11 @@ class VHostTemplate {
 
 	public function __toString(){
 		$return = $this->configureHostPlain();
+
 		if(!empty($this->ssl)){
 			$return .= PHP_EOL . $this->configureHostSSL();
 		}
-		// strip pretty indented tabs seen here, mixed with spaces
-		// http://stackoverflow.com/a/17176793/4233593
-		return preg_replace('/(\t+)|([ \t]+$)/m', '', $return);
+
+		return $return;
 	}
 }
