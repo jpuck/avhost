@@ -35,7 +35,7 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
     /**
      * @dataProvider virtualHostConfigurationDataProvider
      */
-    public function testCanGenerateVirtualHostConfiguration($name, $root, $options = [])
+    public function test_can_generate_virtual_host_configuration_file($name, $root, $options = [])
     {
         $expected = file_get_contents(__DIR__."/confs/$name.conf");
 
