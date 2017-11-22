@@ -3,8 +3,9 @@
 namespace jpuck\avhost;
 
 use InvalidArgumentException;
+use JsonSerializable;
 
-class Configuration
+class Configuration implements JsonSerializable
 {
     protected $hostname = '';
     protected $documentRoot = '';
@@ -119,6 +120,16 @@ class Configuration
     public function __toString()
     {
         return (string) $this->applicator;
+    }
+
+    public function jsonSerialize()
+    {
+        $configuration = [
+            'hostname' => $this->hostname(),
+            'documentRoot' => $this->documentRoot(),
+        ];
+
+        return array_merge($configuration, $this->getOptions());
     }
 
     public function getRealReadableFilename(string $filename, bool $isDirectory = false) : string

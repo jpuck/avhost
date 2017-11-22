@@ -43,4 +43,17 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
 
         $this->assertEquals($expected, $actual);
     }
+
+    public function test_can_cast_to_json()
+    {
+        $expected = [
+            'hostname' => 'example.com',
+            'documentRoot' => static::$tmp,
+        ];
+
+        $configuration = new Configuration($expected['hostname'], $expected['documentRoot']);
+        $actual = json_decode(json_encode($configuration), true);
+
+        $this->assertArraySubset($expected, $actual);
+    }
 }
