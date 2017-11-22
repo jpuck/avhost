@@ -6,7 +6,7 @@ class Applicator
 {
     protected $configuration;
 
-    public function __construct(VHostTemplate $configuration)
+    public function __construct(Configuration $configuration)
     {
         $this->configuration = $configuration;
     }

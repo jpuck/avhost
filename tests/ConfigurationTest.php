@@ -1,7 +1,7 @@
 <?php
-use jpuck\avhost\VHostTemplate;
+use jpuck\avhost\Configuration;
 
-class VHostTemplateTest extends PHPUnit_Framework_TestCase
+class ConfigurationTest extends PHPUnit_Framework_TestCase
 {
     protected static $tmp = '/tmp';
 
@@ -34,7 +34,7 @@ class VHostTemplateTest extends PHPUnit_Framework_TestCase
     {
         $expected = file_get_contents(__DIR__."/confs/$name.conf");
 
-        $actual = (string)(new VHostTemplate($name, $root, $options));
+        $actual = (string)(new Configuration($name, $root, $options));
 
         $this->assertEquals($expected, $actual);
     }

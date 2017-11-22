@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use jpuck\avhost\VHostTemplate;
+use jpuck\avhost\Configuration;
 
 class Create extends Command
 {
@@ -99,7 +99,7 @@ class Create extends Command
         }
 
         file_put_contents("/etc/apache2/sites-available/$hostname.conf",
-            new VHostTemplate($hostname, $directory,
+            new Configuration($hostname, $directory,
                 array_merge($ssl ?? [], $opts ?? [])
             )
         );
