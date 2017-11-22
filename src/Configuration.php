@@ -18,13 +18,13 @@ class Configuration implements JsonSerializable
     protected $configurationSsl;
     protected $applicator;
 
-    public function __construct(string $host, string $documentRoot, array $options = null)
+    public function __construct(string $hostname, string $documentRoot, array $options = null)
     {
         if (isset($options)) {
             $this->options($options);
         }
 
-        $this->hostname($host);
+        $this->hostname($hostname);
         $this->documentRoot($documentRoot);
 
         $this->applicator = new Applicator($this);
