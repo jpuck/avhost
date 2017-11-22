@@ -12,6 +12,7 @@ class VHostTemplate {
         'indexes' => false,
         'realpaths' => true,
     ];
+    protected $applicator;
 
     public function __construct(string $host, string $documentRoot, array $options = null)
     {
@@ -19,17 +20,19 @@ class VHostTemplate {
         $this->documentRoot($documentRoot);
 
         if(isset($options)){
-            $this->setOptions($options);
+            $this->options($options);
         }
 
         if(isset($options['crt']) || isset($options['key'])){
             $this->ssl($options);
         }
+
+        $this->applicator = new Applicator($this);
     }
 
     protected function getRealReadableFilename(string $filename, bool $isDirectory = false) : string
     {
-        if (!$this->options['realpaths']) {
+        if (!$this->options()['realpaths']) {
             return $filename;
         }
 
@@ -46,8 +49,12 @@ class VHostTemplate {
         return $realpath;
     }
 
-    protected function setOptions(array $options)
+    public function options(array $options = null) : array
     {
+        if (is_null($options)) {
+            return $this->options;
+        }
+
         foreach(['indexes', 'forbidden', 'realpaths'] as $option){
             if(isset($options[$option])){
                 if(!is_bool($options[$option])){
@@ -58,6 +65,8 @@ class VHostTemplate {
                 $this->options[$option] = $options[$option];
             }
         }
+
+        return $this->options;
     }
 
     public function hostname(string $hostname = null) : string
@@ -103,7 +112,7 @@ class VHostTemplate {
             // default required
             $this->ssl['req'] = true;
 
-            if($this->options['forbidden'] ?? false){
+            if($this->options()['forbidden'] ?? false){
                 $this->ssl['req'] = false;
             }
 
@@ -119,155 +128,8 @@ class VHostTemplate {
         return $this->ssl;
     }
 
-    protected function getDirectoryOptions() : string
-    {
-        if(!empty($this->options['forbidden'])){
-            return "<Directory {$this->documentRoot}>Require all denied</Directory>";
-        }
-
-        if($this->options['indexes']){
-            $Indexes = '+Indexes';
-        } else {
-            $Indexes = '-Indexes';
-        }
-
-        $options = [
-            "Options $Indexes +FollowSymLinks -MultiViews",
-            'AllowOverride All',
-            'Require all granted',
-        ];
-
-        $optionBlock = PHP_EOL;
-        foreach ($options as $option) {
-            $optionBlock .= $this->indent($option).PHP_EOL;
-        }
-
-        return "<Directory {$this->documentRoot}>$optionBlock</Directory>";
-    }
-
-    protected function configureEssential() : string
-    {
-        $variables = [
-            'hostname' => $this->hostname,
-            'documentRoot' => $this->documentRoot,
-        ];
-
-        return PHP_EOL
-            .$this->getConf('name', $variables).PHP_EOL.PHP_EOL
-            .$this->getConf('blockHidden').PHP_EOL
-            .$this->getConf('redirectToPrimaryHost', $variables).PHP_EOL.PHP_EOL
-            .$this->getDirectoryOptions().PHP_EOL.PHP_EOL
-            .$this->getConf('logging', $variables).PHP_EOL.PHP_EOL
-            .$this->getConf('common')
-            .PHP_EOL;
-    }
-
-    protected function getConf(string $name, array $variables = null) : string
-    {
-        $filename = __DIR__."/Templates/$name";
-
-        if (isset($variables)) {
-            extract($variables);
-            return require "$filename.php";
-        }
-
-        if (!is_readable("$filename.conf")) {
-            throw new \InvalidArgumentException("$filename.conf is not readable.");
-        }
-
-        return file_get_contents("$filename.conf");
-    }
-
-    protected function configureRequireSSL() : string
-    {
-        if(empty($this->ssl['req'])){
-            return "";
-        }
-
-        return PHP_EOL.$this->getConf('requireSsl');
-    }
-
-    protected function addHstsHeader() : string
-    {
-        if(empty($this->ssl['req'])){
-            return "";
-        }
-
-        return $this->getConf('hsts');
-    }
-
-    protected function configureHostPlain() : string
-    {
-        return
-            '<VirtualHost *:80>'.PHP_EOL.
-                $this->indent(
-                    $this->configureRequireSSL().
-                    $this->configureEssential()
-                ).
-            '</VirtualHost>'.PHP_EOL;
-    }
-
-    protected function getSslCertificateLines() : string
-    {
-        if (!isset($this->ssl['crt'])) {
-            return '';
-        }
-
-        $sslCertificateLines = [
-            'SSLEngine on',
-            "SSLCertificateFile {$this->ssl['crt']}",
-            "SSLCertificateKeyFile {$this->ssl['key']}",
-        ];
-
-        if(isset($this->ssl['chn'])){
-            $sslCertificateLines []= "SSLCertificateChainFile {$this->ssl['chn']}";
-        }
-
-        return implode(PHP_EOL, $sslCertificateLines).PHP_EOL;
-    }
-
-    protected function configureHostSSL() : string
-    {
-        return
-            '<IfModule mod_ssl.c>'.PHP_EOL.
-                $this->indent($this->getHostSslContent()).
-            '</IfModule>'.PHP_EOL;
-    }
-
-    protected function getHostSslContent() : string
-    {
-        return
-            '<VirtualHost *:443>'.PHP_EOL.PHP_EOL.
-                $this->indent(
-                    $this->addHstsHeader().
-                    $this->configureEssential().
-                    $this->getSslCertificateLines().PHP_EOL.
-                    $this->getConf('sslOptions')
-                ).PHP_EOL.
-            '</VirtualHost>'.PHP_EOL;
-    }
-
-    protected function indent(string $text, int $length = 1, string $indent = "    ")
-    {
-        $indentation = $indent;
-        while(--$length){
-            $indentation .= $indent;
-        }
-
-        $indented = preg_replace('/^/m', $indentation, $text);
-
-        // strip those indented newlines
-        return preg_replace('/^    $/m', '', $indented);
-    }
-
     public function __toString()
     {
-        $return = $this->configureHostPlain();
-
-        if(!empty($this->ssl)){
-            $return .= PHP_EOL . $this->configureHostSSL();
-        }
-
-        return $return;
+        return (string) $this->applicator;
     }
 }
