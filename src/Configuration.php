@@ -20,7 +20,7 @@ class Configuration implements JsonSerializable
 
     public function __construct(string $hostname, string $documentRoot, array $options = null)
     {
-        if (isset($options)) {
+        if (!empty($options)) {
             $this->options($options);
         }
 
@@ -28,6 +28,26 @@ class Configuration implements JsonSerializable
         $this->documentRoot($documentRoot);
 
         $this->applicator = new Applicator($this);
+    }
+
+    public static function createFromArray(array $configuration)
+    {
+        $required = [
+            'hostname',
+            'documentRoot',
+        ];
+
+        foreach ($required as $attribute) {
+            if (empty($configuration[$attribute])) {
+                throw new MissingAttribute("Missing attribute: $attribute");
+            }
+
+            $$attribute = $configuration[$attribute];
+
+            unset($configuration[$attribute]);
+        }
+
+        return new static($hostname, $documentRoot, $configuration);
     }
 
     public function hostname(string $hostname = null) : string
@@ -152,6 +172,7 @@ class Configuration implements JsonSerializable
     }
 }
 
+class MissingAttribute extends InvalidArgumentException {}
 class BadHostname extends InvalidArgumentException {}
 class NonBoolean extends InvalidArgumentException {}
 class UnreadableFile extends InvalidArgumentException {}

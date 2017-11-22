@@ -59,7 +59,8 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
      */
     public function test_can_cast_to_json(array $expected)
     {
-        $configuration = new Configuration($expected['hostname'], $expected['documentRoot']);
+        $configuration = Configuration::createFromArray($expected);
+
         $actual = json_decode(json_encode($configuration), true);
 
         $this->assertArraySubset($expected, $actual);
