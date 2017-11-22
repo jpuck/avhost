@@ -141,11 +141,11 @@ class Configuration implements JsonSerializable
         $realpath = realpath($filename);
 
         if (empty($realpath)) {
-            throw new InvalidArgumentException("$filename is not readable.");
+            throw new UnreadableFile("$filename is not readable.");
         }
 
         if ($isDirectory && (!is_dir($realpath))) {
-            throw new InvalidArgumentException("$filename is not a directory.");
+            throw new NonDirectory("$filename is not a directory.");
         }
 
         return $realpath;
@@ -154,3 +154,5 @@ class Configuration implements JsonSerializable
 
 class BadHostname extends InvalidArgumentException {}
 class NonBoolean extends InvalidArgumentException {}
+class UnreadableFile extends InvalidArgumentException {}
+class NonDirectory extends InvalidArgumentException {}
