@@ -13,7 +13,8 @@ class VHostTemplate {
         'realpaths' => true,
     ];
 
-    public function __construct(String $host, String $documentRoot, Array $options = null){
+    public function __construct(string $host, string $documentRoot, array $options = null)
+    {
         $this->hostname($host);
         $this->documentRoot($documentRoot);
 
@@ -45,7 +46,8 @@ class VHostTemplate {
         return $realpath;
     }
 
-    protected function setOptions(Array $options){
+    protected function setOptions(array $options)
+    {
         foreach(['indexes', 'forbidden', 'realpaths'] as $option){
             if(isset($options[$option])){
                 if(!is_bool($options[$option])){
@@ -58,7 +60,8 @@ class VHostTemplate {
         }
     }
 
-    public function hostname(String $hostname = null) : String {
+    public function hostname(string $hostname = null) : string
+    {
         if(isset($hostname)){
             if(!ctype_alnum(str_replace(['-','.'], '', $hostname))){
                 throw new InvalidArgumentException(
@@ -70,7 +73,8 @@ class VHostTemplate {
         return $this->hostname;
     }
 
-    public function documentRoot(String $documentRoot = null) : String {
+    public function documentRoot(string $documentRoot = null) : string
+    {
         if(isset($documentRoot)){
             $this->documentRoot = $this->getRealReadableFilename($documentRoot, true);
         }
@@ -78,7 +82,8 @@ class VHostTemplate {
         return $this->documentRoot;
     }
 
-    public function ssl(Array $ssl = null) : Array {
+    public function ssl(array $ssl = null) : array
+    {
         if(isset($ssl)){
             $files = ['crt','key'];
             if(!empty($ssl['chn'])){
@@ -114,7 +119,8 @@ class VHostTemplate {
         return $this->ssl;
     }
 
-    protected function getDirectoryOptions() : String {
+    protected function getDirectoryOptions() : string
+    {
         if(!empty($this->options['forbidden'])){
             return "<Directory {$this->documentRoot}>Require all denied</Directory>";
         }
@@ -139,7 +145,8 @@ class VHostTemplate {
         return "<Directory {$this->documentRoot}>$optionBlock</Directory>";
     }
 
-    protected function configureEssential() : String {
+    protected function configureEssential() : string
+    {
         $variables = [
             'hostname' => $this->hostname,
             'documentRoot' => $this->documentRoot,
@@ -171,7 +178,8 @@ class VHostTemplate {
         return file_get_contents("$filename.conf");
     }
 
-    protected function configureRequireSSL() : String {
+    protected function configureRequireSSL() : string
+    {
         if(empty($this->ssl['req'])){
             return "";
         }
@@ -179,7 +187,8 @@ class VHostTemplate {
         return PHP_EOL.$this->getConf('requireSsl');
     }
 
-    protected function addHstsHeader() : String {
+    protected function addHstsHeader() : string
+    {
         if(empty($this->ssl['req'])){
             return "";
         }
@@ -187,7 +196,8 @@ class VHostTemplate {
         return $this->getConf('hsts');
     }
 
-    protected function configureHostPlain() : String {
+    protected function configureHostPlain() : string
+    {
         return
             '<VirtualHost *:80>'.PHP_EOL.
                 $this->indent(
@@ -216,7 +226,8 @@ class VHostTemplate {
         return implode(PHP_EOL, $sslCertificateLines).PHP_EOL;
     }
 
-    protected function configureHostSSL() : String {
+    protected function configureHostSSL() : string
+    {
         return
             '<IfModule mod_ssl.c>'.PHP_EOL.
                 $this->indent($this->getHostSslContent()).
@@ -236,7 +247,8 @@ class VHostTemplate {
             '</VirtualHost>'.PHP_EOL;
     }
 
-    protected function indent(String $text, Int $length = 1, $indent = "    "){
+    protected function indent(string $text, int $length = 1, string $indent = "    ")
+    {
         $indentation = $indent;
         while(--$length){
             $indentation .= $indent;
@@ -248,7 +260,8 @@ class VHostTemplate {
         return preg_replace('/^    $/m', '', $indented);
     }
 
-    public function __toString(){
+    public function __toString()
+    {
         $return = $this->configureHostPlain();
 
         if(!empty($this->ssl)){
