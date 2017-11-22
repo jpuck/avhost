@@ -11,6 +11,7 @@ class Configuration implements JsonSerializable
     protected $documentRoot = '';
     protected $options = [
         'indexes' => false,
+        'override' => 'None',
     ];
     protected $metaOptions = [
         'realpaths' => true,
@@ -92,9 +93,17 @@ class Configuration implements JsonSerializable
             $this->meta($options['meta']);
         }
 
+        // boolean
         foreach (['indexes', 'forbidden'] as $option) {
             if (isset($options[$option])) {
                 $this->setBoolean($this->options, $option, $options[$option]);
+            }
+        }
+
+        // verbatim
+        foreach (['override'] as $option) {
+            if (isset($options[$option])) {
+                $this->options[$option] = $options[$option];
             }
         }
 

@@ -32,6 +32,12 @@ class Create extends Command
                 InputOption::VALUE_NONE,
                 'Allow directory contents listing indexes'
             )->addOption(
+                'override',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Values for the AllowOverride directive',
+                'None'
+            )->addOption(
                 'ssl-certificate',
                 'c',
                 InputOption::VALUE_REQUIRED,
@@ -118,7 +124,9 @@ class Create extends Command
             $opts['meta']['realpaths'] = false;
         }
 
-        $configuration = new Configuration($hostname, $directory, $opts ?? []);
+        $opts['override'] = $input->getOption('override');
+
+        $configuration = new Configuration($hostname, $directory, $opts);
 
         if ($input->getOption('stdout')) {
             echo $configuration;

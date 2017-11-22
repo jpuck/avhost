@@ -29,6 +29,10 @@ class ConfigurationTest extends PHPUnit_Framework_TestCase
                     ],
                 ],
             ],
+            'override' => ['override.example.com', $tmp, [
+                    'override' => 'All',
+                ],
+            ],
         ];
     }
 
