@@ -12,3 +12,4 @@
 /.scrutinizer.yml                export-ignore
 /tests                           export-ignore
 /release.bash                    export-ignore
+/nbproject/                      export-ignore
