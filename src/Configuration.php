@@ -10,6 +10,8 @@ class Configuration
     protected $documentRoot = '';
     protected $options = [
         'indexes' => false,
+    ];
+    protected $metaOptions = [
         'realpaths' => true,
     ];
     protected $configurationSsl;
@@ -67,15 +69,18 @@ class Configuration
             return $this->getOptions();
         }
 
-        foreach(['indexes', 'forbidden', 'realpaths'] as $option){
+        if (isset($options['meta'])) {
+            $this->setMetaOptions($options['meta']);
+        }
+
+        foreach(['indexes', 'forbidden'] as $option){
             if (isset($options[$option])) {
-                $this->setBooleanOption($option, $options[$option]);
+                $this->setBoolean($this->options, $option, $options[$option]);
             }
         }
 
         if (isset($options['ssl'])) {
             $this->ssl($options['ssl']);
-            unset($options['ssl']);
         }
 
         return $this->getOptions();
@@ -83,16 +88,33 @@ class Configuration
 
     public function getOptions() : array
     {
-        return array_replace($this->options, ['ssl' => $this->ssl()]);
+        return array_replace($this->options, [
+            'ssl' => $this->ssl(),
+            'meta' => $this->getMetaOptions(),
+        ]);
     }
 
-    protected function setBooleanOption(string $name, $value)
+    public function getMetaOptions()
+    {
+        return $this->metaOptions;
+    }
+
+    public function setMetaOptions(array $options)
+    {
+        foreach(['realpaths'] as $option){
+            if (isset($options[$option])) {
+                $this->setBoolean($this->metaOptions, $option, $options[$option]);
+            }
+        }
+    }
+
+    protected function setBoolean(array &$array, string $name, $value)
     {
         if (!is_bool($value)) {
             throw new NonBoolean("$option option must be boolean.");
         }
 
-        $this->options[$name] = $value;
+        $array[$name] = $value;
     }
 
     public function __toString()
@@ -102,7 +124,7 @@ class Configuration
 
     public function getRealReadableFilename(string $filename, bool $isDirectory = false) : string
     {
-        if (!$this->options()['realpaths']) {
+        if (!$this->getMetaOptions()['realpaths']) {
             return $filename;
         }
 
