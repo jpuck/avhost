@@ -1,26 +1,26 @@
 {
-	"name": "jpuck/avhost",
-	"description": "Create Apache 2.4 virtual hosts for Ubuntu",
-	"bin": ["bin/avhost"],
-	"require": {
-		"symfony/console": "^3.1",
-		"php": "^7.0",
-		"symfony/process": "^3.1",
-		"jpuck/phpdev": "^1.5"
-	},
-	"license": "GPL-3.0+",
-	"authors": [
-		{
-			"name": "Jeff Puckett",
-			"email": "jeff@jeffpuckett.com"
-		}
-	],
-	"autoload": {
-		"psr-4": {
-			"jpuck\\avhost\\": "src/"
-		}
-	},
-	"require-dev": {
-		"phpunit/phpunit": "^6.4"
-	}
+    "name": "jpuck/avhost",
+    "description": "Create Apache 2.4 virtual hosts for Ubuntu",
+    "bin": ["bin/avhost"],
+    "require": {
+        "symfony/console": "^3.1",
+        "php": "^7.0",
+        "symfony/process": "^3.1",
+        "jpuck/phpdev": "^1.5"
+    },
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "Jeff Puckett",
+            "email": "jeff@jeffpuckett.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "jpuck\\avhost\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.4"
+    }
 }
