@@ -1,7 +1,9 @@
 <?php
+
+use PHPUnit\Framework\TestCase;
 use jpuck\avhost\Configuration;
 
-class ConfigurationTest extends PHPUnit_Framework_TestCase
+class ConfigurationTest extends TestCase
 {
     protected static $tmp = '/tmp';
 
