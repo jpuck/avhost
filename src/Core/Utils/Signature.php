@@ -1,6 +1,6 @@
 <?php
 
-namespace jpuck\avhost\Utils;
+namespace jpuck\avhost\Core\Utils;
 
 class Signature
 {

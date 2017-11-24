@@ -1,6 +1,6 @@
 <?php
 
-namespace jpuck\avhost\Utils\Traits;
+namespace jpuck\avhost\Core\Traits;
 
 trait SerializeJsonFromArray
 {

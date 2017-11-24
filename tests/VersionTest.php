@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use jpuck\avhost\Utils\Version;
+use jpuck\avhost\Core\Utils\Version;
 
 class VersionTest extends TestCase
 {

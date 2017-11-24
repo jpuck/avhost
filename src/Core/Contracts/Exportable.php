@@ -1,6 +1,6 @@
 <?php
 
-namespace jpuck\avhost\Utils\Contracts;
+namespace jpuck\avhost\Core\Contracts;
 
 use JsonSerializable;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace jpuck\avhost;
+namespace jpuck\avhost\Core;
 
 class Applicator
 {
@@ -137,7 +137,7 @@ class Applicator
 
     protected function getTemplate(string $name, array $variables = null) : string
     {
-        $filename = __DIR__."/Templates/$name";
+        $filename = __DIR__."/templates/$name";
 
         if (isset($variables)) {
             extract($variables);

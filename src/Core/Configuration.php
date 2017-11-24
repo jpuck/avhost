@@ -1,10 +1,10 @@
 <?php
 
-namespace jpuck\avhost;
+namespace jpuck\avhost\Core;
 
 use InvalidArgumentException;
-use jpuck\avhost\Utils\Contracts\Exportable;
-use jpuck\avhost\Utils\Traits\SerializeJsonFromArray;
+use jpuck\avhost\Core\Contracts\Exportable;
+use jpuck\avhost\Core\Traits\SerializeJsonFromArray;
 
 class Configuration implements Exportable
 {

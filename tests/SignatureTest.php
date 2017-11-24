@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use jpuck\avhost\Utils\Signature;
+use jpuck\avhost\Core\Utils\Signature;
 
 class SignatureTest extends TestCase
 {

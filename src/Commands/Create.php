@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use jpuck\avhost\Configuration;
+use jpuck\avhost\Core\Configuration;
 
 class Create extends Command
 {

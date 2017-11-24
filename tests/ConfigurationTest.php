@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use jpuck\avhost\Configuration;
+use jpuck\avhost\Core\Configuration;
 
 class ConfigurationTest extends TestCase
 {
