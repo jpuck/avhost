@@ -3,10 +3,13 @@
 namespace jpuck\avhost;
 
 use InvalidArgumentException;
-use JsonSerializable;
+use jpuck\avhost\Utils\Contracts\Exportable;
+use jpuck\avhost\Utils\Traits\SerializeJsonFromArray;
 
-class ConfigurationSsl implements JsonSerializable
+class ConfigurationSsl implements Exportable
 {
+    use SerializeJsonFromArray;
+
     protected $configuration;
     protected $required;
     protected $certificate;
@@ -66,7 +69,7 @@ class ConfigurationSsl implements JsonSerializable
         return isset($this->$property);
     }
 
-    public function jsonSerialize()
+    public function toArray() : array
     {
         foreach (static::$attributes['required'] as $property) {
             $configuration[$property] = $this->$property;

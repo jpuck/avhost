@@ -79,7 +79,7 @@ class ConfigurationTest extends TestCase
     {
         $configuration = Configuration::createFromArray($expected);
 
-        $actual = json_decode(json_encode($configuration), true);
+        $actual = json_decode($configuration->toJson(), true);
 
         $this->assertArraySubset($expected, $actual);
     }

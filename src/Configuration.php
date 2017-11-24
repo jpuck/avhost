@@ -3,10 +3,13 @@
 namespace jpuck\avhost;
 
 use InvalidArgumentException;
-use JsonSerializable;
+use jpuck\avhost\Utils\Contracts\Exportable;
+use jpuck\avhost\Utils\Traits\SerializeJsonFromArray;
 
-class Configuration implements JsonSerializable
+class Configuration implements Exportable
 {
+    use SerializeJsonFromArray;
+
     protected $hostname = '';
     protected $documentRoot = '';
     protected $options = [
@@ -151,7 +154,7 @@ class Configuration implements JsonSerializable
         return (string) $this->applicator;
     }
 
-    public function jsonSerialize()
+    public function toArray() : array
     {
         $configuration = [
             'hostname' => $this->hostname(),
