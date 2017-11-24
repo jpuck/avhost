@@ -2,11 +2,18 @@
 
 namespace jpuck\avhost\Core\Utils;
 
-class Signature
+use jpuck\avhost\Core\Contracts\Exportable;
+use jpuck\avhost\Core\Traits\SerializeJsonFromArray;
+
+class Signature implements Exportable
 {
-    protected $version;
-    protected $datetime;
-    protected $user;
+    use SerializeJsonFromArray;
+
+    protected $attributes = [
+        'version' => null,
+        'created at' => null,
+        'created by' => null,
+    ];
 
     protected $header = <<<HEADER
 ##########################################
@@ -19,6 +26,27 @@ HEADER;
 ##########################################
 
 FOOTER;
+
+    public static function createFromArray(array $attributes) : Signature
+    {
+        $signature = new Signature;
+
+        $signature->setAttributes($attributes);
+
+        return $signature;
+    }
+
+    public function setAttributes(array $attributes)
+    {
+        foreach ($this->attributes as $key => &$value) {
+            $value = $attributes[$key] ?? $value;
+        }
+    }
+
+    public function toArray() : array
+    {
+        return $this->attributes;
+    }
 
     public function render() : string
     {

@@ -33,4 +33,19 @@ SIGNATURE;
 
         $this->assertSame($expected, $actual);
     }
+
+    public function test_can_import_and_export_array()
+    {
+        $expected = [
+            'version' => '1.0.1',
+            'created at' => '2017-11-24T21:56:15+00:00',
+            'created by' => 'jeff@xervo',
+        ];
+
+        $signature = Signature::createFromArray($expected);
+
+        $actual = $signature->toArray();
+
+        $this->assertEquals($expected, $actual);
+    }
 }
