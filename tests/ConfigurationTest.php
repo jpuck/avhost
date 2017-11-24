@@ -43,7 +43,7 @@ class ConfigurationTest extends TestCase
      */
     public function test_can_generate_virtual_host_configuration_file($name, $root, $options = [])
     {
-        $expected = file_get_contents(__DIR__."/confs/$name.conf");
+        $expected = file_get_contents(__DIR__."/fixtures/$name.conf");
 
         $actual = (string)(new Configuration($name, $root, $options));
 
