@@ -26,9 +26,10 @@ class SignatureTest extends TestCase
 # created at $datetime
 # created by $user
 ##########################################
+
 SIGNATURE;
 
-        $actual = (string) new Signature;
+        $actual = (new Signature)->render();
 
         $this->assertSame($expected, $actual);
     }
