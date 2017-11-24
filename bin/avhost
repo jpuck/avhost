@@ -8,6 +8,7 @@ if(file_exists(__DIR__.'/../../../autoload.php')){
 }
 
 use Symfony\Component\Console\Application;
+use jpuck\avhost\Utils\Version;
 
 $logo = '
               _               _
@@ -22,9 +23,9 @@ Apache 2.4 Virtual Host Generator for Ubuntu
 // ASCII art logo:
 // http://www.patorjk.com/software/taag/#p=display&f=Ivrit&t=avhost
 
-$version = $version ?? 'dev';
+$version = (new Version)->getVersion();
 
-$app = new Application($logo, $version);
+$app = new Application($logo, "version $version");
 
 $app->add(new Commands\Create);
 $app->add(new Commands\Upgrade);
