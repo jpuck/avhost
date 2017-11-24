@@ -27,4 +27,7 @@
         <log type="coverage-text" target="php://stdout"
             showUncoveredFiles="false"/>
     </logging>
+    <php>
+        <env name="AVHOST_VERSION_NUMBER" value="1.0.0"/>
+    </php>
 </phpunit>

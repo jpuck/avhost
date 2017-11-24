@@ -11,7 +11,7 @@ fi
 cd $( dirname "${BASH_SOURCE[0]}" )/../
 
 # add version to script
-sed -i "s/namespace jpuck\\\avhost;/namespace jpuck\\\avhost;\n\$version = '$1';/" bin/avhost
+sed -i "s/protected \$version = 'unknown'/protected \$version = '$1'/" src/Utils/Version.php
 
 composer install --no-dev
 
