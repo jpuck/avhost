@@ -27,8 +27,8 @@ FOOTER;
     {
         $this->attributes = [
             'version' => (new Version)->getVersion(),
-            'created at' => date('c'),
-            'created by' => trim(`whoami`) . '@' . gethostname(),
+            'createdAt' => date('c'),
+            'createdBy' => trim(`whoami`) . '@' . gethostname(),
         ];
 
         if (isset($attributes)) {
