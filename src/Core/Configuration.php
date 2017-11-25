@@ -149,9 +149,24 @@ class Configuration implements Exportable
         $array[$name] = $value;
     }
 
-    public function __toString()
+    protected function renderWithoutSignature() : string
     {
         return (string) $this->applicator;
+    }
+
+    public function render() : string
+    {
+        return $this->renderWithoutSignature();
+    }
+
+    public function getContentHash() : string
+    {
+        return sha1($this->renderWithoutSignature());
+    }
+
+    public function __toString()
+    {
+        return $this->render();
     }
 
     public function toArray() : array

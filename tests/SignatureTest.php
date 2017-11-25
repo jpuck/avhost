@@ -59,6 +59,8 @@ SIGNATURE;
 
         $signature = new Signature($this->getConfiguration(), $expected);
 
+        $expected['contentHash'] = $this->getConfiguration()->getContentHash();
+
         $actual = $signature->toArray();
 
         $this->assertEquals($expected, $actual);

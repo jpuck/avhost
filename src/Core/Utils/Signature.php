@@ -54,7 +54,9 @@ FOOTER;
 
     public function toArray() : array
     {
-        return $this->attributes;
+        return array_merge($this->attributes, [
+            'contentHash' => $this->configuration->getContentHash(),
+        ]);
     }
 
     public function render() : string
