@@ -83,4 +83,18 @@ class ConfigurationTest extends TestCase
 
         $this->assertArraySubset($expected, $actual);
     }
+
+    /**
+     * @dataProvider arrayConfigurationDataProvider
+     */
+    public function test_can_import_and_export(array $expected)
+    {
+        $configuration = Configuration::createFromArray($expected);
+
+        $exported = $configuration->toArray();
+
+        $imported = Configuration::createFromArray($exported);
+
+        $this->assertArraySubset($expected, $imported->toArray());
+    }
 }

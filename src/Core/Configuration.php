@@ -176,7 +176,13 @@ class Configuration implements Exportable
             'documentRoot' => $this->documentRoot(),
         ];
 
-        return array_merge($configuration, $this->getOptions());
+        $configuration = array_merge($configuration, $this->getOptions());
+
+        if (isset($configuration['ssl'])) {
+            $configuration['ssl'] = $configuration['ssl']->toArray();
+        }
+
+        return $configuration;
     }
 
     public function getRealReadableFilename(string $filename, bool $isDirectory = false) : string
