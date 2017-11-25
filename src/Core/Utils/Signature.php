@@ -34,6 +34,8 @@ FOOTER;
         if ($attributes) {
             $this->setAttributes($attributes);
         }
+
+        $this->attributes['contentHash'] = $configuration->getContentHash();
     }
 
     public function setDefaultAttributes()
@@ -54,9 +56,7 @@ FOOTER;
 
     public function toArray() : array
     {
-        return array_merge($this->attributes, [
-            'contentHash' => $this->configuration->getContentHash(),
-        ]);
+        return $this->attributes;
     }
 
     public function render() : string
