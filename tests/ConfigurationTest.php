@@ -53,11 +53,11 @@ class ConfigurationTest extends TestCase
     public function arrayConfigurationDataProvider()
     {
         return [
-            [[
+            'plain' => [[
                 'hostname' => 'example.com',
                 'documentRoot' => static::$tmp,
             ]],
-            [[
+            'ssl' => [[
                 'hostname' => 'ssl.example.com',
                 'documentRoot' => '/var/www/html',
                 'meta' => [
