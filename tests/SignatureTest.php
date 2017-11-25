@@ -42,7 +42,7 @@ SIGNATURE;
             'created by' => 'jeff@xervo',
         ];
 
-        $signature = Signature::createFromArray($expected);
+        $signature = new Signature($expected);
 
         $actual = $signature->toArray();
 

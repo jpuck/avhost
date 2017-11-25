@@ -9,11 +9,7 @@ class Signature implements Exportable
 {
     use SerializeJsonFromArray;
 
-    protected $attributes = [
-        'version' => null,
-        'created at' => null,
-        'created by' => null,
-    ];
+    protected $attributes;
 
     protected $header = <<<HEADER
 ##########################################
@@ -27,13 +23,17 @@ HEADER;
 
 FOOTER;
 
-    public static function createFromArray(array $attributes) : Signature
+    public function __construct(array $attributes = null)
     {
-        $signature = new Signature;
+        $this->attributes = [
+            'version' => (new Version)->getVersion(),
+            'created at' => date('c'),
+            'created by' => trim(`whoami`) . '@' . gethostname(),
+        ];
 
-        $signature->setAttributes($attributes);
-
-        return $signature;
+        if (isset($attributes)) {
+            $this->setAttributes($attributes);
+        }
     }
 
     public function setAttributes(array $attributes)
@@ -50,14 +50,8 @@ FOOTER;
 
     public function render() : string
     {
-        $attributes = [
-            'version' => (new Version)->getVersion(),
-            'created at' => date('c'),
-            'created by' => trim(`whoami`) . '@' . gethostname(),
-        ];
-
         $string = '';
-        foreach ($attributes as $key => $value) {
+        foreach ($this->attributes as $key => $value) {
             $string .= $this->getKeyValueLine($key, $value);
         }
 
