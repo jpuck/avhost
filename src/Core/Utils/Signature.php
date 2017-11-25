@@ -23,17 +23,22 @@ HEADER;
 
 FOOTER;
 
-    public function __construct(array $attributes = null)
+    public function __construct(array $attributes = [])
+    {
+        $this->setDefaultAttributes();
+
+        if ($attributes) {
+            $this->setAttributes($attributes);
+        }
+    }
+
+    public function setDefaultAttributes()
     {
         $this->attributes = [
             'version' => (new Version)->getVersion(),
             'createdAt' => date('c'),
             'createdBy' => trim(`whoami`) . '@' . gethostname(),
         ];
-
-        if (isset($attributes)) {
-            $this->setAttributes($attributes);
-        }
     }
 
     public function setAttributes(array $attributes)
