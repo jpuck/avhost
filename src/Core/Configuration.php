@@ -4,11 +4,12 @@ namespace jpuck\avhost\Core;
 
 use InvalidArgumentException;
 use jpuck\avhost\Core\Contracts\Exportable;
-use jpuck\avhost\Core\Traits\SerializeJsonFromArray;
+use jpuck\avhost\Core\Traits\EncodeFromArray;
+use jpuck\avhost\Core\Utils\Signature;
 
 class Configuration implements Exportable
 {
-    use SerializeJsonFromArray;
+    use EncodeFromArray;
 
     protected $hostname = '';
     protected $documentRoot = '';

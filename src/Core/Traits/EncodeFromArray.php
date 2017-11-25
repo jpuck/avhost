@@ -2,7 +2,7 @@
 
 namespace jpuck\avhost\Core\Traits;
 
-trait SerializeJsonFromArray
+trait EncodeFromArray
 {
     public function jsonSerialize()
     {
@@ -12,5 +12,10 @@ trait SerializeJsonFromArray
     public function toJson() : string
     {
         return json_encode($this);
+    }
+
+    public function toBase64() : string
+    {
+        return base64_encode($this->toJson());
     }
 }

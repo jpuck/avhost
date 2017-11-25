@@ -3,12 +3,12 @@
 namespace jpuck\avhost\Core\Utils;
 
 use jpuck\avhost\Core\Contracts\Exportable;
-use jpuck\avhost\Core\Traits\SerializeJsonFromArray;
+use jpuck\avhost\Core\Traits\EncodeFromArray;
 use jpuck\avhost\Core\Configuration;
 
 class Signature implements Exportable
 {
-    use SerializeJsonFromArray;
+    use EncodeFromArray;
 
     protected $configuration;
     protected $attributes;
