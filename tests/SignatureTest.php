@@ -2,12 +2,26 @@
 
 use PHPUnit\Framework\TestCase;
 use jpuck\avhost\Core\Utils\Signature;
+use jpuck\avhost\Core\Configuration;
 
 class SignatureTest extends TestCase
 {
+    public function getConfiguration() : Configuration
+    {
+        return Configuration::createFromArray([
+            'hostname' => 'example.com',
+            'documentRoot' => '/var/www/html',
+            'meta' => [
+                'realpaths' => false,
+            ],
+        ]);
+    }
+
     public function test_can_instantiate_object()
     {
-        $this->assertInstanceOf(Signature::class, new Signature);
+        $signature = new Signature($this->getConfiguration());
+
+        $this->assertInstanceOf(Signature::class, $signature);
     }
 
     public function test_can_get_signature_string()
@@ -29,7 +43,8 @@ class SignatureTest extends TestCase
 
 SIGNATURE;
 
-        $actual = (new Signature)->render();
+        $signature = new Signature($this->getConfiguration());
+        $actual = $signature->render();
 
         $this->assertSame($expected, $actual);
     }
@@ -42,7 +57,7 @@ SIGNATURE;
             'createdBy' => 'jeff@xervo',
         ];
 
-        $signature = new Signature($expected);
+        $signature = new Signature($this->getConfiguration(), $expected);
 
         $actual = $signature->toArray();
 

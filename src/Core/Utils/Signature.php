@@ -4,11 +4,13 @@ namespace jpuck\avhost\Core\Utils;
 
 use jpuck\avhost\Core\Contracts\Exportable;
 use jpuck\avhost\Core\Traits\SerializeJsonFromArray;
+use jpuck\avhost\Core\Configuration;
 
 class Signature implements Exportable
 {
     use SerializeJsonFromArray;
 
+    protected $configuration;
     protected $attributes;
 
     protected $header = <<<HEADER
@@ -23,8 +25,10 @@ HEADER;
 
 FOOTER;
 
-    public function __construct(array $attributes = [])
+    public function __construct(Configuration $configuration, array $attributes = [])
     {
+        $this->configuration = $configuration;
+
         $this->setDefaultAttributes();
 
         if ($attributes) {
