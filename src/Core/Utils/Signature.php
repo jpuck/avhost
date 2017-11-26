@@ -78,6 +78,11 @@ FOOTER;
         return $array;
     }
 
+    public function toArrayWithoutConfiguration() : array
+    {
+        return $this->attributes;
+    }
+
     public function render() : string
     {
         $string = '';
