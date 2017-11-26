@@ -31,7 +31,7 @@ class Configuration implements Exportable
         }
 
         $this->setHostname($hostname);
-        $this->documentRoot($documentRoot);
+        $this->setDocumentRoot($documentRoot);
 
         $this->applicator = new Applicator($this);
 
@@ -74,13 +74,16 @@ class Configuration implements Exportable
         return $this;
     }
 
-    public function documentRoot(string $documentRoot = null) : string
+    public function getDocumentRoot() : string
     {
-        if (isset($documentRoot)) {
-            $this->documentRoot = $this->getRealReadableFilename($documentRoot, true);
-        }
-
         return $this->documentRoot;
+    }
+
+    public function setDocumentRoot(string $documentRoot) : Configuration
+    {
+        $this->documentRoot = $this->getRealReadableFilename($documentRoot, true);
+
+        return $this;
     }
 
     public function ssl(array $properties = null)
@@ -180,7 +183,7 @@ class Configuration implements Exportable
     {
         $configuration = [
             'hostname' => $this->getHostname(),
-            'documentRoot' => $this->documentRoot(),
+            'documentRoot' => $this->getDocumentRoot(),
             'signature' => $this->signature->toArrayWithoutConfiguration(),
         ];
 

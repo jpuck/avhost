@@ -46,7 +46,7 @@ class Applicator
     {
         $variables = [
             'hostname' => $this->configuration->getHostname(),
-            'documentRoot' => $this->configuration->documentRoot(),
+            'documentRoot' => $this->configuration->getDocumentRoot(),
         ];
 
         return PHP_EOL
@@ -62,7 +62,7 @@ class Applicator
     protected function getDirectoryOptions() : string
     {
         $config = $this->configuration->options();
-        $documentRoot = $this->configuration->documentRoot();
+        $documentRoot = $this->configuration->getDocumentRoot();
 
         if(!empty($config['forbidden'])){
             return "<Directory $documentRoot>Require all denied</Directory>";
