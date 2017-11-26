@@ -55,6 +55,8 @@ SIGNATURE;
 
     public function test_can_import_and_export_array()
     {
+        $configuration = $this->getConfiguration();
+
         $expected = [
             'version' => '1.0.1',
             'createdAt' => '2017-11-24T21:56:15+00:00',
@@ -63,9 +65,10 @@ SIGNATURE;
 
         $signature = new Signature($this->getConfiguration(), $expected);
 
-        $expected['contentHash'] = $this->getConfiguration()->getContentHash();
+        $expected['contentHash'] = $configuration->getContentHash();
+        $expected['configuration'] = $configuration->toArray();
 
-        $actual = $signature->toArray();
+        $actual = Signature::createFromBase64($signature->toBase64())->toArray();
 
         $this->assertEquals($expected, $actual);
     }

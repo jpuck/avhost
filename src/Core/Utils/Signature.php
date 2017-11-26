@@ -38,6 +38,21 @@ FOOTER;
         $this->attributes['contentHash'] = $configuration->getContentHash();
     }
 
+    public static function createFromArray(array $attributes)
+    {
+        if (empty($attributes['configuration'])) {
+            throw new MissingConfiguration('Signature requires Configuration!');
+        }
+
+        $configuration = $attributes['configuration'];
+
+        if (!$configuration instanceof Configuration) {
+            $configuration = Configuration::createFromArray($configuration);
+        }
+
+        return new static($configuration, $attributes);
+    }
+
     public function setDefaultAttributes()
     {
         $this->attributes = [
@@ -56,7 +71,11 @@ FOOTER;
 
     public function toArray() : array
     {
-        return $this->attributes;
+        $array = $this->attributes;
+
+        $array['configuration'] = $this->configuration->toArray();
+
+        return $array;
     }
 
     public function render() : string
@@ -74,3 +93,5 @@ FOOTER;
         return "# $key $value".PHP_EOL;
     }
 }
+
+class MissingConfiguration extends \InvalidArgumentException {}
