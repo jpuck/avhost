@@ -35,7 +35,7 @@ class Configuration implements Exportable
 
         $this->applicator = new Applicator($this);
 
-        $this->signature = new Signature($this, $options['signature'] ?? []);
+        $this->signature($options['meta']['signature'] ?? []);
     }
 
     public static function createFromArray(array $configuration)
@@ -56,6 +56,20 @@ class Configuration implements Exportable
         }
 
         return new static($hostname, $documentRoot, $configuration);
+    }
+
+    public function signature($signature = null) : Signature
+    {
+        if (isset($signature) && !$signature instanceof Signature) {
+            $signature = array_merge($signature, ['configuration' => $this->toArray()]);
+            $this->signature = Signature::createFromArray($signature);
+        }
+
+        if (is_null($this->signature)) {
+            $this->signature = new Signature($this);
+        }
+
+        return $this->signature;
     }
 
     public function hostname(string $hostname = null) : string
@@ -132,13 +146,26 @@ class Configuration implements Exportable
     public function meta(array $options = null)
     {
         if (is_null($options)) {
-            return $this->metaOptions;
+            return $this->getMeta();
+        }
+
+        if (isset($options['signature'])) {
+            $this->signature($options['signature']);
         }
 
         foreach (['realpaths'] as $option) {
             if (isset($options[$option])) {
                 $this->setBoolean($this->metaOptions, $option, $options[$option]);
             }
+        }
+
+        return $this->getMeta();
+    }
+
+    public function getMeta()
+    {
+        if ($this->signature() !== null) {
+            return array_merge($this->metaOptions, ['signature' => $this->signature()->toArray()]);
         }
 
         return $this->metaOptions;

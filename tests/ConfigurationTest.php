@@ -62,16 +62,16 @@ class ConfigurationTest extends TestCase
                 'documentRoot' => '/var/www/html',
                 'meta' => [
                     'realpaths' => false,
+                    'signature' => [
+                        'version' => '1.0.1',
+                        'createdAt' => '2017-11-24T21:56:15+00:00',
+                        'createdBy' => 'jeff@xervo',
+                    ],
                 ],
                 'ssl' => [
                     'key' => '/etc/ssl/private/ssl.example.com.key',
                     'certificate' => '/etc/ssl/certs/ssl.example.com.pem',
                     'required' => true,
-                ],
-                'signature' => [
-                    'version' => '1.0.1',
-                    'createdAt' => '2017-11-24T21:56:15+00:00',
-                    'createdBy' => 'jeff@xervo',
                 ],
             ]],
         ];
