@@ -22,6 +22,7 @@ class Configuration implements Exportable
     ];
     protected $configurationSsl;
     protected $applicator;
+    protected $signature;
 
     public function __construct(string $hostname, string $documentRoot, array $options = null)
     {
@@ -33,6 +34,7 @@ class Configuration implements Exportable
         $this->documentRoot($documentRoot);
 
         $this->applicator = new Applicator($this);
+        $this->signature = new Signature($this);
     }
 
     public static function createFromArray(array $configuration)
@@ -157,7 +159,7 @@ class Configuration implements Exportable
 
     public function render() : string
     {
-        return $this->renderWithoutSignature();
+        return $this->renderWithoutSignature() . $this->signature->render();
     }
 
     public function getContentHash() : string

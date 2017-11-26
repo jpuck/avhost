@@ -36,6 +36,7 @@ FOOTER;
         }
 
         $this->attributes['contentHash'] = $configuration->getContentHash();
+        $this->attributes['configuration'] = $configuration->toBase64();
     }
 
     public function setDefaultAttributes()
