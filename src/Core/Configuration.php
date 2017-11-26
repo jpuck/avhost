@@ -30,7 +30,7 @@ class Configuration implements Exportable
             $this->options($options);
         }
 
-        $this->hostname($hostname);
+        $this->setHostname($hostname);
         $this->documentRoot($documentRoot);
 
         $this->applicator = new Applicator($this);
@@ -58,17 +58,20 @@ class Configuration implements Exportable
         return new static($hostname, $documentRoot, $configuration);
     }
 
-    public function hostname(string $hostname = null) : string
+    public function getHostname() : string
     {
-        if (is_null($hostname)) {
-            return $this->hostname;
-        }
+        return $this->hostname;
+    }
 
+    public function setHostname(string $hostname) : Configuration
+    {
         if (!ctype_alnum(str_replace(['-','.'], '', $hostname))) {
             throw new BadHostname("Invalid characters in: $hostname");
         }
 
-        return $this->hostname = strtolower($hostname);
+        $this->hostname = strtolower($hostname);
+
+        return $this;
     }
 
     public function documentRoot(string $documentRoot = null) : string
@@ -176,7 +179,7 @@ class Configuration implements Exportable
     public function toArray() : array
     {
         $configuration = [
-            'hostname' => $this->hostname(),
+            'hostname' => $this->getHostname(),
             'documentRoot' => $this->documentRoot(),
             'signature' => $this->signature->toArrayWithoutConfiguration(),
         ];

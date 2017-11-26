@@ -45,7 +45,7 @@ class Applicator
     protected function getCommon() : string
     {
         $variables = [
-            'hostname' => $this->configuration->hostname(),
+            'hostname' => $this->configuration->getHostname(),
             'documentRoot' => $this->configuration->documentRoot(),
         ];
 
