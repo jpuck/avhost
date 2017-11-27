@@ -43,7 +43,7 @@ class Configuration implements Exportable
         $this->signature = new Signature($this, $options['signature'] ?? []);
     }
 
-    public static function createFromArray(array $configuration)
+    public static function createFromArray(array $attributes)
     {
         $required = [
             'hostname',
@@ -51,16 +51,14 @@ class Configuration implements Exportable
         ];
 
         foreach ($required as $attribute) {
-            if (empty($configuration[$attribute])) {
+            if (empty($attributes[$attribute])) {
                 throw new MissingAttribute("Missing attribute: $attribute");
             }
-
-            $$attribute = $configuration[$attribute];
-
-            unset($configuration[$attribute]);
         }
 
-        return new static($hostname, $documentRoot, $configuration);
+        $configuration = new static($attributes['hostname'], $attributes['documentRoot']);
+
+        return parent::createFromArray($attributes, $configuration);
     }
 
     public function getHostname() : string

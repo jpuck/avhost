@@ -19,7 +19,16 @@ class ConfigurationTest extends TestCase
     {
         $tmp = static::$tmp;
         return [
-            'plain' => ['example.com', $tmp],
+            'plain' => ['example.com', $tmp, [
+                    'meta' => [
+                        'signature' => [
+                            'version' => '3.0.0',
+                            'createdAt' => '2017-11-27T05:01:56+00:00',
+                            'createdBy' => 'jeff@xervo',
+                        ],
+                    ],
+                ]
+            ],
             'ssl' => ['ssl.example.com', $tmp, [
                     'meta' => [
                         'realpaths' => false,

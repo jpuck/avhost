@@ -131,7 +131,7 @@ class Create extends Command
         $configuration = new Configuration($hostname, $directory, $opts);
 
         if ($input->getOption('stdout')) {
-            echo $configuration;
+            echo $configuration->render();
             return;
         }
 
