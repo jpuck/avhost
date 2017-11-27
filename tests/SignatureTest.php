@@ -25,9 +25,7 @@ class SignatureTest extends TestCase
 
     public function test_can_instantiate_object()
     {
-        $signature = (new Signature)->setConfiguration($this->getConfiguration());
-
-        $this->assertInstanceOf(Signature::class, $signature);
+        $this->assertInstanceOf(Signature::class, new Signature);
     }
 
     public function test_can_get_signature_string()
@@ -35,15 +33,13 @@ class SignatureTest extends TestCase
         $version = '7.0.5';
         $createdAt = '2017-11-24T21:56:15+00:00';
         $createdBy = 'xenial@xervo';
+        $array = [
+            'version' => $version,
+            'createdAt' => $createdAt,
+            'createdBy' => $createdBy,
+        ];
 
-        $configuration = $this->getConfiguration(['meta' => [
-            'signature' => [
-                'version' => $version,
-                'createdAt' => $createdAt,
-                'createdBy' => $createdBy,
-            ],
-        ]]);
-        $contentHash = $configuration->getContentHash();
+        $configuration = $this->getConfiguration(['meta' => ['signature' => $array,]]);
 
         $expected = <<<SIGNATURE
 ##########################################
@@ -52,28 +48,24 @@ class SignatureTest extends TestCase
 # version $version
 # createdAt $createdAt
 # createdBy $createdBy
-# contentHash $contentHash
-# configuration eyJob3N0bmFtZSI6ImV4YW1wbGUuY29tIiwiZG9jdW1lbnRSb290IjoiXC92YXJcL3d3d1wvaHRtbCIsIm1ldGEiOnsicmVhbHBhdGhzIjpmYWxzZSwic2lnbmF0dXJlIjp7InZlcnNpb24iOiI3LjAuNSIsImNyZWF0ZWRBdCI6IjIwMTctMTEtMjRUMjE6NTY6MTUrMDA6MDAiLCJjcmVhdGVkQnkiOiJ4ZW5pYWxAeGVydm8ifX0sImluZGV4ZXMiOmZhbHNlLCJvdmVycmlkZSI6Ik5vbmUiLCJmb3JiaWRkZW4iOmZhbHNlfQ==
+# contentHash {$configuration->getContentHash()}
+# configuration {$configuration->toBase64()}
 ##########################################
 
 SIGNATURE;
 
-        $signature = Signature::createFromArray([
-            'configuration' => $configuration,
-            'version' => $version,
-            'createdAt' => $createdAt,
-            'createdBy' => $createdBy,
-        ]);
+        $signature = Signature::createFromArray($array);
 
-        $actual = $signature->render();
+        $actual = $signature->render([
+            'contentHash' => $configuration->getContentHash(),
+            'configuration' => $configuration->toBase64(),
+        ]);
 
         $this->assertSame($expected, $actual);
     }
 
     public function test_can_import_and_export_array()
     {
-        $configuration = $this->getConfiguration();
-
         $expected = [
             'version' => '1.0.1',
             'createdAt' => '2017-11-24T21:56:15+00:00',
@@ -81,10 +73,8 @@ SIGNATURE;
         ];
 
         $signature = Signature::createFromArray($expected);
-        $signature->setConfiguration($configuration);
 
         $exported = $signature->toArray();
-        $exported['configuration'] = $configuration->toArray();
 
         $actual = Signature::createFromArray($exported)->toArray();
 

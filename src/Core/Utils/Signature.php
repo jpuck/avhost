@@ -10,7 +10,6 @@ class Signature implements Exportable
 {
     use EncodeFromArray;
 
-    protected $configuration;
     protected $version;
     protected $createdAt;
     protected $createdBy;
@@ -30,22 +29,6 @@ FOOTER;
     public function __construct()
     {
         $this->setDefaultValues();
-    }
-
-    public function getConfiguration() : Configuration
-    {
-        return $this->configuration;
-    }
-
-    public function setConfiguration($configuration) : Signature
-    {
-        if (!$configuration instanceof Configuration) {
-            $configuration = Configuration::createFromArray($configuration);
-        }
-
-        $this->configuration = $configuration;
-
-        return $this;
     }
 
     public function getVersion() : string
@@ -102,18 +85,14 @@ FOOTER;
         ];
     }
 
-    public function render() : string
+    public function render(array $attributes = []) : string
     {
         $string = '';
-        foreach ($this->toArray() as $key => $value) {
-            $string .= $this->getKeyValueLine($key, $value);
+        $values = array_replace_recursive($this->toArray(), $attributes);
+
+        foreach ($values as $name => $value) {
+            $string .= $this->getKeyValueLine($name, $value);
         }
-
-        $contentHash = $this->getConfiguration()->getContentHash();
-        $string .= $this->getKeyValueLine('contentHash', $contentHash);
-
-        $configuration = $this->getConfiguration()->toBase64();
-        $string .= $this->getKeyValueLine('configuration', $configuration);
 
         return $this->header . $string . $this->footer;
     }

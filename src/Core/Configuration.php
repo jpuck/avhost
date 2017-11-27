@@ -188,7 +188,13 @@ class Configuration implements Exportable
 
     public function render() : string
     {
-        return $this->renderWithoutSignature();
+        return $this->renderWithoutSignature()
+            . $this->getMeta()
+                ->getSignature()
+                ->render([
+                    'contentHash' => $this->getContentHash(),
+                    'configuration' => $this->toBase64(),
+                ]);
     }
 
     public function getContentHash() : string

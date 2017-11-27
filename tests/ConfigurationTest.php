@@ -45,7 +45,7 @@ class ConfigurationTest extends TestCase
     {
         $expected = file_get_contents(__DIR__."/fixtures/$name.conf");
 
-        $actual = (string)(new Configuration($name, $root, $options));
+        $actual = (new Configuration($name, $root, $options))->render();
 
         $this->assertEquals($expected, $actual);
     }
