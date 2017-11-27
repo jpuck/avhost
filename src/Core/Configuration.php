@@ -13,25 +13,30 @@ class Configuration implements Exportable
 
     protected $hostname = '';
     protected $documentRoot = '';
-    protected $options = [
-        'indexes' => false,
-        'override' => 'None',
-    ];
-    protected $metaOptions = [
-        'realpaths' => true,
-    ];
+    protected $meta;
+    protected $options;
     protected $configurationSsl;
     protected $applicator;
     protected $signature;
 
-    public function __construct(string $hostname, string $documentRoot, array $options = null)
+    public function __construct(string $hostname, string $documentRoot, $options = null)
     {
-        if (!empty($options)) {
-            $this->options($options);
+        if (isset($options['meta'])) {
+            $this->setMeta($options['meta']);
+            unset($options['meta']);
         }
 
         $this->setHostname($hostname);
         $this->setDocumentRoot($documentRoot);
+
+        if (isset($options['ssl'])) {
+            $this->ssl($options['ssl']);
+            unset($options['ssl']);
+        }
+
+        if (isset($options)) {
+            $this->setOptions($options);
+        }
 
         $this->applicator = new Applicator($this);
 
@@ -99,7 +104,7 @@ class Configuration implements Exportable
     public function options(array $options = null) : array
     {
         if (is_null($options)) {
-            return $this->getOptions();
+            return $this->getOptions()->toArray();
         }
 
         if (isset($options['meta'])) {
@@ -127,27 +132,44 @@ class Configuration implements Exportable
         return $this->getOptions();
     }
 
-    public function getOptions() : array
+    public function getOptions() : Options
     {
-        return array_replace($this->options, [
-            'ssl' => $this->ssl(),
-            'meta' => $this->meta(),
-        ]);
+        return $this->options ?? $this->options = new Options;
     }
 
-    public function meta(array $options = null)
+    public function setOptions($options) : Configuration
     {
-        if (is_null($options)) {
-            return $this->metaOptions;
+        if ($options instanceof Options) {
+            $this->options = $options;
+            return $this;
         }
 
-        foreach (['realpaths'] as $option) {
-            if (isset($options[$option])) {
-                $this->setBoolean($this->metaOptions, $option, $options[$option]);
-            }
+        if (is_array($options)) {
+            $this->options = Options::createFromArray($options);
+            return $this;
         }
 
-        return $this->metaOptions;
+        throw new BadOptionsType('No matching type for Options');
+    }
+
+    public function getMeta() : Meta
+    {
+        return $this->meta ?? $this->meta = new Meta;
+    }
+
+    public function setMeta($meta) : Configuration
+    {
+        if ($meta instanceof Meta) {
+            $this->meta = $meta;
+            return $this;
+        }
+
+        if (is_array($meta)) {
+            $this->meta = Meta::createFromArray($meta);
+            return $this;
+        }
+
+        throw new BadMetaType('No matching type for Meta');
     }
 
     protected function setBoolean(array &$array, string $name, $value)
@@ -161,7 +183,7 @@ class Configuration implements Exportable
 
     protected function renderWithoutSignature() : string
     {
-        return (string) $this->applicator;
+        return $this->applicator->render();
     }
 
     public function render() : string
@@ -174,20 +196,15 @@ class Configuration implements Exportable
         return sha1($this->renderWithoutSignature());
     }
 
-    public function __toString()
-    {
-        return $this->render();
-    }
-
     public function toArray() : array
     {
         $configuration = [
             'hostname' => $this->getHostname(),
             'documentRoot' => $this->getDocumentRoot(),
-            'signature' => $this->signature->toArrayWithoutConfiguration(),
+            'meta' => $this->getMeta()->toArray(),
         ];
 
-        $configuration = array_merge($configuration, $this->getOptions());
+        $configuration = array_merge($configuration, $this->getOptions()->toArray());
 
         if (isset($configuration['ssl'])) {
             $configuration['ssl'] = $configuration['ssl']->toArray();
@@ -198,7 +215,7 @@ class Configuration implements Exportable
 
     public function getRealReadableFilename(string $filename, bool $isDirectory = false) : string
     {
-        if (!$this->meta()['realpaths']) {
+        if (!$this->getMeta()->getRealpaths()) {
             return $filename;
         }
 
@@ -216,6 +233,8 @@ class Configuration implements Exportable
     }
 }
 
+class BadMetaType extends InvalidArgumentException {}
+class BadOptionsType extends InvalidArgumentException {}
 class MissingAttribute extends InvalidArgumentException {}
 class BadHostname extends InvalidArgumentException {}
 class NonBoolean extends InvalidArgumentException {}

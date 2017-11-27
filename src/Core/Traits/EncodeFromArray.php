@@ -29,9 +29,11 @@ trait EncodeFromArray
         return static::createFromJson(base64_decode($attributes));
     }
 
-    public static function createFromArray(array $attributes)
+    public static function createFromArray(array $attributes, $object = null)
     {
-        $object = new static;
+        if (is_null($object)) {
+            $object = new static;
+        }
 
         foreach ($attributes as $name => $value) {
             $method = "set$name";

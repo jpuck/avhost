@@ -22,6 +22,6 @@ class MetaTest extends TestCase
 
         $imported = Meta::createFromArray($exported);
 
-        $this->assertSame($expected, $imported->toArray());
+        $this->assertArraySubset($expected, $imported->toArray());
     }
 }

@@ -11,7 +11,7 @@ class Applicator
         $this->configuration = $configuration;
     }
 
-    public function __toString()
+    public function render()
     {
         $vhostConfig = $this->getPlainHostConfiguration();
 

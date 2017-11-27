@@ -11,7 +11,9 @@ class Signature implements Exportable
     use EncodeFromArray;
 
     protected $configuration;
-    protected $attributes;
+    protected $version;
+    protected $createdAt;
+    protected $createdBy;
 
     protected $header = <<<HEADER
 ##########################################
@@ -25,70 +27,93 @@ HEADER;
 
 FOOTER;
 
-    public function __construct(Configuration $configuration, array $attributes = [])
+    public function __construct()
     {
-        $this->configuration = $configuration;
-
-        $this->setDefaultAttributes();
-
-        if ($attributes) {
-            $this->setAttributes($attributes);
-        }
-
-        $this->attributes['contentHash'] = $configuration->getContentHash();
+        $this->setDefaultValues();
     }
 
-    public static function createFromArray(array $attributes)
+    public function getConfiguration() : Configuration
     {
-        if (empty($attributes['configuration'])) {
-            throw new MissingConfiguration('Signature requires Configuration!');
-        }
+        return $this->configuration;
+    }
 
-        $configuration = $attributes['configuration'];
-
+    public function setConfiguration($configuration) : Signature
+    {
         if (!$configuration instanceof Configuration) {
             $configuration = Configuration::createFromArray($configuration);
         }
 
-        return new static($configuration, $attributes);
+        $this->configuration = $configuration;
+
+        return $this;
     }
 
-    public function setDefaultAttributes()
+    public function getVersion() : string
     {
-        $this->attributes = [
-            'version' => (new Version)->getVersion(),
-            'createdAt' => date('c'),
-            'createdBy' => trim(`whoami`) . '@' . gethostname(),
-        ];
+        return $this->version;
     }
 
-    public function setAttributes(array $attributes)
+    public function setVersion(string $version) : Signature
     {
-        foreach ($this->attributes as $key => &$value) {
-            $value = $attributes[$key] ?? $value;
-        }
+        $this->version = $version;
+
+        return $this;
+    }
+
+    public function getCreatedAt() : string
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(string $createdAt) : Signature
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getCreatedBy() : string
+    {
+        return $this->createdBy;
+    }
+
+    public function setCreatedBy(string $createdBy) : Signature
+    {
+        $this->createdBy = $createdBy;
+
+        return $this;
+    }
+
+    public function setDefaultValues()
+    {
+        $this->setVersion((new Version)->getVersion());
+
+        $this->setCreatedAt(date('c'));
+
+        $this->setCreatedBy(trim(`whoami`).'@'.gethostname());
     }
 
     public function toArray() : array
     {
-        $array = $this->attributes;
-
-        $array['configuration'] = $this->configuration->toArray();
-
-        return $array;
-    }
-
-    public function toArrayWithoutConfiguration() : array
-    {
-        return $this->attributes;
+        return [
+            'version' => $this->getVersion(),
+            'createdAt' => $this->getCreatedAt(),
+            'createdBy' => $this->getCreatedBy(),
+        ];
     }
 
     public function render() : string
     {
         $string = '';
-        foreach ($this->attributes as $key => $value) {
+        foreach ($this->toArray() as $key => $value) {
             $string .= $this->getKeyValueLine($key, $value);
         }
+
+        $contentHash = $this->getConfiguration()->getContentHash();
+        $string .= $this->getKeyValueLine('contentHash', $contentHash);
+
+        $configuration = $this->getConfiguration()->toBase64();
+        $string .= $this->getKeyValueLine('configuration', $configuration);
 
         return $this->header . $string . $this->footer;
     }
@@ -98,5 +123,3 @@ FOOTER;
         return "# $key $value".PHP_EOL;
     }
 }
-
-class MissingConfiguration extends \InvalidArgumentException {}
