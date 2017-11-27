@@ -28,4 +28,18 @@ trait EncodeFromArray
     {
         return static::createFromJson(base64_decode($attributes));
     }
+
+    public static function createFromArray(array $attributes)
+    {
+        $object = new static;
+
+        foreach ($attributes as $name => $value) {
+            $method = "set$name";
+            if (method_exists($object, $method)) {
+                $object->$method($attributes[$name]);
+            }
+        }
+
+        return $object;
+    }
 }

@@ -11,6 +11,7 @@ class Options implements Exportable
 
     protected $indexes = false;
     protected $override = 'None';
+    protected $forbidden = false;
 
     public function getIndexes() : bool
     {
@@ -36,25 +37,24 @@ class Options implements Exportable
         return $this;
     }
 
+    public function getForbidden() : bool
+    {
+        return $this->forbidden;
+    }
+
+    public function setForbidden(bool $forbidden) : Options
+    {
+        $this->forbidden = $forbidden;
+
+        return $this;
+    }
+
     public function toArray() : array
     {
         return [
             'indexes' => $this->getIndexes(),
             'override' => $this->getOverride(),
+            'forbidden' => $this->getForbidden(),
         ];
-    }
-
-    public static function createFromArray(array $attributes)
-    {
-        $options = new static;
-
-        foreach ($attributes as $name => $value) {
-            $method = "set$name";
-            if (method_exists($options, $method)) {
-                $options->$method($attributes[$name]);
-            }
-        }
-
-        return $options;
     }
 }

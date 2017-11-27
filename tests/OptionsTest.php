@@ -15,6 +15,7 @@ class OptionsTest extends TestCase
         $expected = [
             'indexes' => true,
             'override' => 'All',
+            'forbidden' => true,
         ];
 
         $options = Options::createFromArray($expected);
