@@ -2,6 +2,7 @@
 
 use PHPUnit\Framework\TestCase;
 use jpuck\avhost\Core\Meta;
+use jpuck\avhost\Core\Configuration;
 
 class MetaTest extends TestCase
 {
@@ -23,5 +24,14 @@ class MetaTest extends TestCase
         $imported = Meta::createFromArray($exported);
 
         $this->assertArraySubset($expected, $imported->toArray());
+    }
+
+    public function test_can_set_configuration_in_signature()
+    {
+        $expected = new Configuration('example.com', '/tmp');
+
+        $actual = (new Meta)->setConfiguration($expected)->getSignature()->getConfiguration();
+
+        $this->assertSame($expected, $actual);
     }
 }
