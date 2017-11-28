@@ -4,11 +4,12 @@ namespace jpuck\avhost\Core\Utils;
 
 use jpuck\avhost\Core\Contracts\Exportable;
 use jpuck\avhost\Core\Traits\EncodeFromArray;
-use jpuck\avhost\Core\Configuration;
+use jpuck\avhost\Core\Traits\Configurable;
 
 class Signature implements Exportable
 {
     use EncodeFromArray;
+    use Configurable;
 
     protected $version;
     protected $createdAt;
@@ -67,15 +68,6 @@ FOOTER;
         return $this;
     }
 
-    public function setDefaultValues()
-    {
-        $this->setVersion((new Version)->getVersion());
-
-        $this->setCreatedAt(date('c'));
-
-        $this->setCreatedBy(trim(`whoami`).'@'.gethostname());
-    }
-
     public function toArray() : array
     {
         return [
@@ -85,19 +77,37 @@ FOOTER;
         ];
     }
 
-    public function render(array $attributes = []) : string
+    public function render() : string
     {
         $string = '';
-        $values = array_replace_recursive($this->toArray(), $attributes);
 
-        foreach ($values as $name => $value) {
+        foreach ($this->toArray() as $name => $value) {
             $string .= $this->getKeyValueLine($name, $value);
+        }
+
+        if ($configuration = $this->getConfiguration()) {
+            $string .= $this->getKeyValueLine('contentHash', $this->getContentHash());
+            $string .= $this->getKeyValueLine('configuration', $configuration->toBase64());
         }
 
         return $this->header . $string . $this->footer;
     }
 
-    public function getKeyValueLine(string $key, string $value) : string
+    protected function setDefaultValues()
+    {
+        $this->setVersion((new Version)->getVersion());
+
+        $this->setCreatedAt(date('c'));
+
+        $this->setCreatedBy(trim(`whoami`).'@'.gethostname());
+    }
+
+    protected function getContentHash() : string
+    {
+        return sha1($this->getConfiguration()->getApplicator()->render());
+    }
+
+    protected function getKeyValueLine(string $key, string $value) : string
     {
         return "# $key $value".PHP_EOL;
     }

@@ -33,13 +33,14 @@ class SignatureTest extends TestCase
         $version = '7.0.5';
         $createdAt = '2017-11-24T21:56:15+00:00';
         $createdBy = 'xenial@xervo';
-        $array = [
+        $signature = [
             'version' => $version,
             'createdAt' => $createdAt,
             'createdBy' => $createdBy,
         ];
 
-        $configuration = $this->getConfiguration(['meta' => ['signature' => $array,]]);
+        $configuration = $this->getConfiguration(['meta' => ['signature' => $signature]]);
+        $signature['configuration'] = $configuration;
 
         $expected = <<<SIGNATURE
 ##########################################
@@ -54,12 +55,9 @@ class SignatureTest extends TestCase
 
 SIGNATURE;
 
-        $signature = Signature::createFromArray($array);
+        $signature = Signature::createFromArray($signature);
 
-        $actual = $signature->render([
-            'contentHash' => $configuration->getContentHash(),
-            'configuration' => $configuration->toBase64(),
-        ]);
+        $actual = $signature->render();
 
         $this->assertSame($expected, $actual);
     }

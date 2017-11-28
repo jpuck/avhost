@@ -9,7 +9,9 @@ use jpuck\avhost\Core\Utils\Signature;
 
 class Configuration implements Exportable
 {
-    use EncodeFromArray;
+    use EncodeFromArray {
+        EncodeFromArray::createFromArray as traitCreateFromArray;
+    }
 
     protected $hostname = '';
     protected $documentRoot = '';
@@ -38,9 +40,9 @@ class Configuration implements Exportable
             $this->setOptions($options);
         }
 
-        $this->applicator = new Applicator($this);
-
         $this->signature = new Signature($this, $options['signature'] ?? []);
+
+        $this->setApplicator(new Applicator($this));
     }
 
     public static function createFromArray(array $attributes)
@@ -58,7 +60,7 @@ class Configuration implements Exportable
 
         $configuration = new static($attributes['hostname'], $attributes['documentRoot']);
 
-        return parent::createFromArray($attributes, $configuration);
+        return static::traitCreateFromArray($attributes, $configuration);
     }
 
     public function getHostname() : string
@@ -85,6 +87,18 @@ class Configuration implements Exportable
     public function setDocumentRoot(string $documentRoot) : Configuration
     {
         $this->documentRoot = $this->getRealReadableFilename($documentRoot, true);
+
+        return $this;
+    }
+
+    public function getApplicator() : Applicator
+    {
+        return $this->applicator;
+    }
+
+    public function setApplicator(Applicator $applicator) : Configuration
+    {
+        $this->applicator = $applicator;
 
         return $this;
     }
